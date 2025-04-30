@@ -14,6 +14,7 @@ import {
   TagIcon,
   Filter,
   Activity,
+  Search,
 } from "lucide-react";
 import { TokenStatusBadge } from "./TokenStatusBadge";
 import { SetExpiryModal } from "./modals/SetExpiryModal";
@@ -106,7 +107,13 @@ export default function ApiKeysList() {
   const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
   const [copiedSecretId, setCopiedSecretId] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<string | null>(null);
+
+  // 새로운 필터 및 검색 상태
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const [filters, setFilters] = useState({
+    status: [] as string[],
+  });
 
   // 토큰 상태별 통계
   const tokenStats = {
@@ -118,14 +125,29 @@ export default function ApiKeysList() {
     inactive: apiKeys.filter((key) => key.status === "inactive").length,
   };
 
-  // 필터링된 API 키 목록
-  const filteredApiKeys = filterStatus
-    ? filterStatus === "active"
-      ? apiKeys.filter(
-          (key) => key.status === "active" || key.status === "expiring"
-        ) // active 필터링 시 expiring도 포함
-      : apiKeys.filter((key) => key.status === filterStatus)
-    : apiKeys;
+  // 필터링된 API 키 목록 (검색어 및 상태 필터링 적용)
+  const filteredApiKeys = apiKeys.filter((key) => {
+    // 검색 필터
+    const matchesSearch =
+      key.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      key.accessKeyId.toLowerCase().includes(searchTerm.toLowerCase());
+
+    // 상태 필터
+    const matchesStatus =
+      filters.status.length === 0 || filters.status.includes(key.status);
+
+    return matchesSearch && matchesStatus;
+  });
+
+  // 필터 토글 함수
+  const toggleStatusFilter = (status: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      status: prev.status.includes(status)
+        ? prev.status.filter((s) => s !== status)
+        : [...prev.status, status],
+    }));
+  };
 
   // 날짜 포맷팅 유틸리티
   function formatDate(date: Date | null) {
@@ -290,7 +312,7 @@ export default function ApiKeysList() {
           <p className="text-2xl font-bold mt-2">{tokenStats.active}</p>
           <button
             className="text-xs text-green-600 hover:underline mt-2"
-            onClick={() => setFilterStatus("active")}
+            onClick={() => toggleStatusFilter("active")}
           >
             활성 토큰 보기
           </button>
@@ -304,7 +326,7 @@ export default function ApiKeysList() {
           <p className="text-2xl font-bold mt-2">{tokenStats.expiring}</p>
           <button
             className="text-xs text-amber-600 hover:underline mt-2"
-            onClick={() => setFilterStatus("expiring")}
+            onClick={() => toggleStatusFilter("expiring")}
           >
             만료 예정 토큰 보기
           </button>
@@ -318,40 +340,78 @@ export default function ApiKeysList() {
           <p className="text-2xl font-bold mt-2">{tokenStats.inactive}</p>
           <button
             className="text-xs text-gray-500 hover:underline mt-2"
-            onClick={() => setFilterStatus("inactive")}
+            onClick={() => toggleStatusFilter("inactive")}
           >
             비활성 토큰 보기
           </button>
         </div>
       </div>
 
-      {/* 필터 및 API 키 추가 버튼 */}
-      <div className="flex justify-between items-center">
-        <div className="relative">
-          <button
-            className="flex items-center gap-2 px-3 py-2 text-sm border border-[#CDE5FF] rounded-md hover:bg-[#F6FBFF]"
-            onClick={() => setFilterStatus(null)}
-          >
-            <Filter className="h-4 w-4" />
-            {filterStatus
-              ? `${
-                  filterStatus === "active"
-                    ? "활성"
-                    : filterStatus === "expiring"
-                    ? "만료 예정"
-                    : "비활성"
-                } 토큰`
-              : "모든 토큰"}
-            {filterStatus && (
-              <XCircle
-                className="h-4 w-4 ml-2 text-gray-400 hover:text-gray-600"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setFilterStatus(null);
-                }}
-              />
+      {/* 검색 및 필터 컨트롤 */}
+      <div className="flex flex-col lg:flex-row gap-4 justify-between">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5E99D6]" />
+            <input
+              type="text"
+              placeholder="API 키 이름 또는 Access Key ID 검색"
+              className="pl-10 pr-4 py-2 border border-[#CDE5FF] rounded-md w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#81B9F8]"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="relative">
+            <button
+              className="inline-flex items-center gap-2 px-4 py-2 border border-[#CDE5FF] rounded-md hover:bg-[#F6FBFF]"
+              onClick={() => setShowFilterMenu(!showFilterMenu)}
+            >
+              <Filter className="h-4 w-4 text-[#5E99D6]" />
+              필터
+              {filters.status.length > 0 && (
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0067AC] text-[10px] text-white">
+                  {filters.status.length}
+                </span>
+              )}
+            </button>
+
+            {showFilterMenu && (
+              <div className="absolute top-full mt-1 left-0 z-10 w-72 bg-white rounded-md border border-[#CDE5FF] p-4 shadow-md">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="font-medium">필터</h4>
+                  <button
+                    className="text-[#5E99D6] text-sm hover:underline"
+                    onClick={() => setFilters({ status: [] })}
+                  >
+                    초기화
+                  </button>
+                </div>
+
+                <div className="mb-4">
+                  <h5 className="text-sm font-medium mb-2">상태</h5>
+                  <div className="flex flex-wrap gap-2">
+                    {["active", "expiring", "inactive"].map((status) => (
+                      <button
+                        key={status}
+                        className={`px-3 py-1 rounded-full text-xs ${
+                          filters.status.includes(status)
+                            ? "bg-[#0067AC] text-white"
+                            : "bg-[#F6FBFF] text-[#5E99D6] border border-[#CDE5FF]"
+                        }`}
+                        onClick={() => toggleStatusFilter(status)}
+                      >
+                        {status === "active"
+                          ? "활성"
+                          : status === "expiring"
+                          ? "만료 예정"
+                          : "비활성"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             )}
-          </button>
+          </div>
         </div>
 
         <button
@@ -367,8 +427,8 @@ export default function ApiKeysList() {
         <div className="text-center py-16 border border-dashed border-[#CDE5FF] rounded-lg bg-white">
           <Key className="h-16 w-16 mx-auto text-[#5E99D6] mb-4" />
           <h3 className="text-lg font-medium mb-2">
-            {filterStatus
-              ? "조건에 맞는 API 키가 없습니다"
+            {searchTerm || filters.status.length > 0
+              ? "검색 조건과 일치하는 API 키가 없습니다"
               : "API 키가 없습니다"}
           </h3>
           <p className="text-[#5E99D6] mb-6 max-w-md mx-auto">
