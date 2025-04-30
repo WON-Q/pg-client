@@ -79,7 +79,7 @@ export const SetExpiryModal: React.FC<SetExpiryModalProps> = ({
           </div>
 
           <div className="flex items-center p-3 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-700">
-            <Info className="h-4 w-4 mr-2 flex-shrink-0" />
+            <div className="h-4 w-4 mr-2 flex-shrink-0" />
             <p>
               만료일이 지나면 API 키가 자동으로 만료되어 서비스에서 더 이상
               사용할 수 없게 됩니다.
