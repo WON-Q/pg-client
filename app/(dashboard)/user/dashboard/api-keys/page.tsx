@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import ApiKeysList from "./components/ApiKeysList";
-import ApiGuide from "./components/ApiGuide";
-import ErrorGuide from "./components/ErrorGuide";
+import ApiKeysList from "@/components/user/dashboard/api-keys/ApiKeysList";
+import ApiGuide from "@/components/user/dashboard/api-keys/ApiGuide";
+import ErrorGuide from "@/components/user/dashboard/api-keys/ErrorGuide";
 
 export default function ApiKeysPage() {
   const [activeTab, setActiveTab] = useState("keys"); // keys, guide, errors
