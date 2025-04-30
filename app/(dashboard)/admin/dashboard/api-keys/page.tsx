@@ -3,16 +3,13 @@
 import React, { useState } from "react";
 import {
   ArrowDownUp,
-  Check,
   ChevronLeft,
   ChevronRight,
-  Eye,
-  EyeOff,
   MoreHorizontal,
   Search,
 } from "lucide-react";
 
-// Mock tokens data
+// Mock api-keys data
 const mockTokens = [
   {
     id: 1,
@@ -45,7 +42,7 @@ const mockTokens = [
     secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY2",
     createdAt: "2023-03-10T11:05:17",
     lastUsed: "2023-05-10T12:15:40",
-    status: "inactive",
+    status: "expired",
   },
   {
     id: 4,
@@ -76,14 +73,13 @@ export default function AdminTokensPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  const [showSecretKey, setShowSecretKey] = useState({});
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [sortConfig, setSortConfig] = useState({
     key: "createdAt",
     direction: "desc",
   });
 
-  // Filter tokens
+  // Filter api-keys
   const filteredTokens = tokens.filter(
     (token) =>
       token.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -91,7 +87,7 @@ export default function AdminTokensPage() {
       token.accessKeyId.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Sort tokens
+  // Sort api-keys
   const sortedTokens = [...filteredTokens].sort((a, b) => {
     if (a[sortConfig.key] < b[sortConfig.key]) {
       return sortConfig.direction === "asc" ? -1 : 1;
@@ -117,29 +113,12 @@ export default function AdminTokensPage() {
     setSortConfig({ key, direction });
   };
 
-  const toggleShowSecretKey = (tokenId) => {
-    setShowSecretKey((prev) => ({
-      ...prev,
-      [tokenId]: !prev[tokenId],
-    }));
-  };
-
   const toggleDropdown = (tokenId) => {
     setActiveDropdown(activeDropdown === tokenId ? null : tokenId);
   };
 
-  const handleRevokeToken = (tokenId) => {
-    setTokens(
-      tokens.map((token) =>
-        token.id === tokenId ? { ...token, status: "revoked" } : token
-      )
-    );
-    setActiveDropdown(null);
-  };
-
-  const handleResetToken = (tokenId) => {
-    // In a real app, you'd call an API to reset the token
-    alert(`토큰을 재설정하시겠습니까? (토큰 ID: ${tokenId})`);
+  const handleDeleteToken = (tokenId) => {
+    setTokens(tokens.filter((token) => token.id !== tokenId));
     setActiveDropdown(null);
   };
 
@@ -147,14 +126,14 @@ export default function AdminTokensPage() {
   const StatusBadge = ({ status }) => {
     const statusStyles = {
       active: "bg-green-100 text-green-800",
-      inactive: "bg-gray-100 text-gray-800",
+      expired: "bg-gray-100 text-gray-800",
       pending: "bg-yellow-100 text-yellow-800",
       revoked: "bg-red-100 text-red-800",
     };
 
     const statusText = {
       active: "활성",
-      inactive: "비활성",
+      expired: "만료된",
       pending: "대기중",
       revoked: "취소됨",
     };
@@ -173,9 +152,9 @@ export default function AdminTokensPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">API 토큰 관리</h1>
+        <h1 className="text-2xl font-bold">관리자 API 토큰 관리</h1>
         <p className="text-[#5E99D6] mt-1">
-          사용자에게 발급된 모든 API 키를 관리합니다.
+          모든 사용자에게 발급된 API 키를 관리하고 상태를 변경할 수 있습니다.
         </p>
       </div>
 
@@ -223,7 +202,6 @@ export default function AdminTokensPage() {
                   </div>
                 </th>
                 <th className="px-6 py-3">Access Key</th>
-                <th className="px-6 py-3">Secret Key</th>
                 <th
                   className="px-6 py-3 cursor-pointer"
                   onClick={() => requestSort("status")}
@@ -272,25 +250,6 @@ export default function AdminTokensPage() {
                     >
                       {token.accessKeyId}
                     </td>
-                    <td className="px-6 py-4 font-mono text-xs relative">
-                      <div className="flex items-center">
-                        <span className="truncate max-w-[100px]">
-                          {showSecretKey[token.id]
-                            ? token.secretKey
-                            : "••••••••••••••••••••••••••••••••••"}
-                        </span>
-                        <button
-                          className="ml-2 text-[#5E99D6] hover:text-[#0067AC]"
-                          onClick={() => toggleShowSecretKey(token.id)}
-                        >
-                          {showSecretKey[token.id] ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
-                        </button>
-                      </div>
-                    </td>
                     <td className="px-6 py-4">
                       <StatusBadge status={token.status} />
                     </td>
@@ -312,16 +271,10 @@ export default function AdminTokensPage() {
                       {activeDropdown === token.id && (
                         <div className="absolute right-6 mt-1 w-48 rounded-md border border-[#CDE5FF] bg-white p-2 shadow-md z-10">
                           <button
-                            className="flex w-full items-center rounded-md px-3 py-2 text-sm text-[#0067AC] hover:bg-[#F6FBFF]"
-                            onClick={() => handleResetToken(token.id)}
-                          >
-                            토큰 재설정
-                          </button>
-                          <button
                             className="flex w-full items-center rounded-md px-3 py-2 text-sm text-[#FA333F] hover:bg-[#F6FBFF]"
-                            onClick={() => handleRevokeToken(token.id)}
+                            onClick={() => handleDeleteToken(token.id)}
                           >
-                            토큰 취소
+                            토큰 삭제
                           </button>
                         </div>
                       )}
@@ -331,7 +284,7 @@ export default function AdminTokensPage() {
               ) : (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={7}
                     className="px-6 py-8 text-center text-[#5E99D6]"
                   >
                     발급된 토큰이 없거나 검색 조건과 일치하는 결과가 없습니다.

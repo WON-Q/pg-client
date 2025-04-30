@@ -28,20 +28,20 @@ interface ApiKey {
   createdAt: Date;
   lastUsed: Date | null;
   expiresAt: Date | null;
-  status: "active" | "expiring" | "inactive";
+  status: "active" | "expiring" | "expired";
 }
 
 // 토큰 상태 확인 함수 추가
 const checkTokenStatus = (
   expiresAt: Date | null
-): "active" | "expiring" | "inactive" => {
+): "active" | "expiring" | "expired" => {
   if (!expiresAt) return "active"; // 만료일이 없으면 항상 활성 상태
 
   const now = new Date();
 
   // 이미 만료된 경우
   if (expiresAt < now) {
-    return "inactive";
+    return "expired";
   }
 
   // 만료까지 남은 일수 계산
@@ -83,13 +83,13 @@ export default function ApiKeysList() {
     },
     {
       id: "key3",
-      name: "비활성 API 키",
+      name: "만료된 API 키",
       accessKeyId: "AKIAINACTIVEXAMPLE",
       secretKey: "XyZaBcDdEeFfGgHhIiJjKkLlMmNnOoPp1234567890",
       createdAt: new Date("2023-01-15"),
       lastUsed: new Date("2023-02-10"),
       expiresAt: new Date("2023-07-01"), // 이미 만료됨
-      status: "inactive",
+      status: "expired",
     },
   ]);
 
@@ -122,7 +122,7 @@ export default function ApiKeysList() {
       (key) => key.status === "active" || key.status === "expiring"
     ).length, // 활성 토큰은 만료 예정 토큰도 포함
     expiring: apiKeys.filter((key) => key.status === "expiring").length,
-    inactive: apiKeys.filter((key) => key.status === "inactive").length,
+    expired: apiKeys.filter((key) => key.status === "expired").length,
   };
 
   // 필터링된 API 키 목록 (검색어 및 상태 필터링 적용)
@@ -298,7 +298,7 @@ export default function ApiKeysList() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-lg border border-[#CDE5FF] shadow-sm">
           <div className="flex justify-between items-center">
-            <p className="text-sm text-[#5E99D6]">전체 토큰</p>
+            <p className="text-sm text-[#5E99D6]">전체 API 키</p>
             <Key className="h-5 w-5 text-[#5E99D6]" />
           </div>
           <p className="text-2xl font-bold mt-2">{tokenStats.total}</p>
@@ -306,7 +306,7 @@ export default function ApiKeysList() {
 
         <div className="bg-white p-4 rounded-lg border-l-4 border border-green-500 shadow-sm">
           <div className="flex justify-between items-center">
-            <p className="text-sm text-green-600">활성 토큰</p>
+            <p className="text-sm text-green-600">활성 API 키</p>
             <Activity className="h-5 w-5 text-green-500" />
           </div>
           <p className="text-2xl font-bold mt-2">{tokenStats.active}</p>
@@ -314,7 +314,7 @@ export default function ApiKeysList() {
 
         <div className="bg-white p-4 rounded-lg border-l-4 border border-amber-500 shadow-sm">
           <div className="flex justify-between items-center">
-            <p className="text-sm text-amber-600">만료 예정 토큰</p>
+            <p className="text-sm text-amber-600">만료 예정 API 키</p>
             <Clock className="h-5 w-5 text-amber-500" />
           </div>
           <p className="text-2xl font-bold mt-2">{tokenStats.expiring}</p>
@@ -322,10 +322,10 @@ export default function ApiKeysList() {
 
         <div className="bg-white p-4 rounded-lg border-l-4 border border-gray-400 shadow-sm">
           <div className="flex justify-between items-center">
-            <p className="text-sm text-gray-500">비활성 토큰</p>
+            <p className="text-sm text-gray-500">만료된 API 키</p>
             <XCircle className="h-5 w-5 text-gray-400" />
           </div>
-          <p className="text-2xl font-bold mt-2">{tokenStats.inactive}</p>
+          <p className="text-2xl font-bold mt-2">{tokenStats.expired}</p>
         </div>
       </div>
 
@@ -372,7 +372,7 @@ export default function ApiKeysList() {
                 <div className="mb-4">
                   <h5 className="text-sm font-medium mb-2">상태</h5>
                   <div className="flex flex-wrap gap-2">
-                    {["active", "expiring", "inactive"].map((status) => (
+                    {["active", "expiring", "expired"].map((status) => (
                       <button
                         key={status}
                         className={`px-3 py-1 rounded-full text-xs ${
@@ -386,7 +386,7 @@ export default function ApiKeysList() {
                           ? "활성"
                           : status === "expiring"
                           ? "만료 예정"
-                          : "비활성"}
+                          : "만료됨"}
                       </button>
                     ))}
                   </div>

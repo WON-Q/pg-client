@@ -1,7 +1,7 @@
 import React from "react";
 
 interface TokenStatusBadgeProps {
-  status: "active" | "expiring" | "inactive";
+  status: "active" | "expiring" | "expired";
 }
 
 export const TokenStatusBadge: React.FC<TokenStatusBadgeProps> = ({
@@ -22,10 +22,10 @@ export const TokenStatusBadge: React.FC<TokenStatusBadgeProps> = ({
       textColor = "text-amber-800";
       label = "만료 예정";
       break;
-    case "inactive":
+    case "expired":
       bgColor = "bg-gray-100";
       textColor = "text-gray-800";
-      label = "비활성";
+      label = "만료됨";
       break;
   }
 
