@@ -1,19 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Key,
-  Trash2,
-  Calendar,
-  FileDown,
-  Search,
-  Filter,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { FileDown, Filter, Search, Trash2 } from "lucide-react";
+import Pagination from "@/components/ui/Pagination"; // Import the new Pagination component
 
 // Mock API keys data
-const mockApiKeys = Array.from({ length: 50 }, (_, i) => ({
+const mockApiKeys = Array.from({ length: 500 }, (_, i) => ({
   id: i + 1,
   merchant: `가맹점 ${String.fromCharCode(65 + (i % 26))}`,
   apiKeyName: `API Key ${i + 1}`,
@@ -230,31 +222,11 @@ export default function AdminApiKeysPage() {
 
       {/* Pagination */}
       {filteredApiKeys.length > 0 && (
-        <div className="flex items-center justify-between border-t border-[#CDE5FF] bg-[#F6FBFF] px-6 py-3">
-          <div className="text-sm text-[#5E99D6]">
-            전체 {filteredApiKeys.length}개 항목 중 {indexOfFirstItem + 1} -{" "}
-            {Math.min(indexOfLastItem, filteredApiKeys.length)}번째 표시
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              disabled={currentPage <= 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              className="inline-flex items-center justify-center rounded-md border border-[#CDE5FF] bg-white p-1 text-[#0067AC] hover:bg-[#F6FBFF] disabled:opacity-40"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <span className="text-sm text-[#0067AC]">
-              {currentPage} / {totalPages}
-            </span>
-            <button
-              disabled={currentPage >= totalPages}
-              onClick={() => setCurrentPage(currentPage + 1)}
-              className="inline-flex items-center justify-center rounded-md border border-[#CDE5FF] bg-white p-1 text-[#0067AC] hover:bg-[#F6FBFF] disabled:opacity-40"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       )}
     </div>
   );

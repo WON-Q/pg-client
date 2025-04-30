@@ -225,37 +225,40 @@ export default function AdminDashboardLayout({ children }) {
           <div className="flex h-full flex-col p-4 overflow-y-auto">
             <nav className="grid gap-2 text-sm flex-grow-0">
               {adminRoutes.map((route) => (
-                <Link
-                  key={route.path}
-                  href={route.path}
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-[#F6FBFF] transition-colors",
-                    pathname === route.path
-                      ? "bg-[#F6FBFF] text-[#0067AC]"
-                      : "text-[#5E99D6]"
-                  )}
-                >
-                  {route.icon}
-                  <span>{route.name}</span>
-                </Link>
+                  <Link
+                      key={route.path}
+                      href={route.path}
+                      className={cn(
+                          "flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-[#F6FBFF] transition-colors",
+                          pathname === route.path
+                              ? "bg-[#F6FBFF] text-[#0067AC]"
+                              : "text-[#5E99D6]"
+                      )}
+                  >
+                    {route.icon}
+                    <span>{route.name}</span>
+                  </Link>
               ))}
             </nav>
             <div className="flex-grow"></div>
             <div className="pt-4">
               <div className="rounded-lg border border-[#CDE5FF] bg-white p-4">
-                <div className="mb-2 text-sm font-medium">시스템 상태</div>
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <div className="text-xs">서버 상태 정상</div>
+                <div className="flex items-center gap-4">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0067AC]">
+                    <span className="text-xs font-bold text-white">?</span>
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium">
+                      도움이 필요하신가요?
+                    </div>
+                    <div className="text-xs text-[#5E99D6]">
+                      고객센터에 문의하세요
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <div className="text-xs">DB 연결 정상</div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <div className="text-xs">API 응답시간 정상</div>
-                </div>
+                <button className="mt-4 w-full inline-flex items-center justify-center rounded-md border border-[#CDE5FF] bg-transparent hover:bg-[#F6FBFF] text-[#101010] h-8 px-3 text-sm">
+                  고객센터
+                </button>
               </div>
             </div>
           </div>
