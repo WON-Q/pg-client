@@ -8,6 +8,8 @@ interface ApiKey {
   secretKey: string;
   createdAt: Date;
   lastUsed: Date | null;
+  expiresAt: Date | null;
+  status: "active" | "expiring" | "inactive";
 }
 
 interface SuccessApiKeyModalProps {
@@ -89,6 +91,28 @@ const SuccessApiKeyModal: React.FC<SuccessApiKeyModalProps> = ({
                     <Copy className="h-5 w-5" />
                   )}
                 </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                키 활성 기간
+              </label>
+              <div className="bg-white border border-[#CDE5FF] rounded-md p-3 flex justify-between items-center">
+                <div>
+                  <span>
+                    {newlyCreatedKey.expiresAt &&
+                      `${new Date().toLocaleDateString()} ~ ${newlyCreatedKey.expiresAt.toLocaleDateString()}`}
+                  </span>
+                  <div className="text-xs text-[#5E99D6] mt-1">
+                    {newlyCreatedKey.expiresAt &&
+                      `만료까지 ${Math.ceil(
+                        (newlyCreatedKey.expiresAt.getTime() -
+                          new Date().getTime()) /
+                          (1000 * 60 * 60 * 24)
+                      )}일 남음`}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
