@@ -310,12 +310,6 @@ export default function ApiKeysList() {
             <Activity className="h-5 w-5 text-green-500" />
           </div>
           <p className="text-2xl font-bold mt-2">{tokenStats.active}</p>
-          <button
-            className="text-xs text-green-600 hover:underline mt-2"
-            onClick={() => toggleStatusFilter("active")}
-          >
-            활성 토큰 보기
-          </button>
         </div>
 
         <div className="bg-white p-4 rounded-lg border-l-4 border border-amber-500 shadow-sm">
@@ -324,12 +318,6 @@ export default function ApiKeysList() {
             <Clock className="h-5 w-5 text-amber-500" />
           </div>
           <p className="text-2xl font-bold mt-2">{tokenStats.expiring}</p>
-          <button
-            className="text-xs text-amber-600 hover:underline mt-2"
-            onClick={() => toggleStatusFilter("expiring")}
-          >
-            만료 예정 토큰 보기
-          </button>
         </div>
 
         <div className="bg-white p-4 rounded-lg border-l-4 border border-gray-400 shadow-sm">
@@ -338,12 +326,6 @@ export default function ApiKeysList() {
             <XCircle className="h-5 w-5 text-gray-400" />
           </div>
           <p className="text-2xl font-bold mt-2">{tokenStats.inactive}</p>
-          <button
-            className="text-xs text-gray-500 hover:underline mt-2"
-            onClick={() => toggleStatusFilter("inactive")}
-          >
-            비활성 토큰 보기
-          </button>
         </div>
       </div>
 
