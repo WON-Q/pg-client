@@ -174,7 +174,7 @@ export default function AdminApiKeysPage() {
           <thead>
             <tr className="bg-[#F6FBFF]">
               <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
-                API Key ID
+                ID
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
                 가맹점
