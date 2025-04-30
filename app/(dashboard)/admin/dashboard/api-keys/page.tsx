@@ -2,328 +2,260 @@
 
 import React, { useState } from "react";
 import {
-  ArrowDownUp,
+  Key,
+  Trash2,
+  Calendar,
+  FileDown,
+  Search,
+  Filter,
   ChevronLeft,
   ChevronRight,
-  MoreHorizontal,
-  Search,
 } from "lucide-react";
 
-// Mock api-keys data
-const mockTokens = [
-  {
-    id: 1,
-    userId: "user123",
-    username: "홍길동",
-    email: "hong@example.com",
-    accessKeyId: "AKIAIOSFODNN7EXAMPLE",
-    secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
-    createdAt: "2023-01-15T08:23:45",
-    lastUsed: "2023-05-14T14:30:12",
-    status: "active",
-  },
-  {
-    id: 2,
-    userId: "user456",
-    username: "김철수",
-    email: "kim@example.com",
-    accessKeyId: "AKIAI44QH8DHBEXAMPLE",
-    secretKey: "je7MtGbClwBF/2Zp9Utk/h3yCo8nvbEXAMPLEKEY",
-    createdAt: "2023-02-22T15:10:30",
-    lastUsed: "2023-05-15T09:45:23",
-    status: "active",
-  },
-  {
-    id: 3,
-    userId: "user789",
-    username: "이영희",
-    email: "lee@example.com",
-    accessKeyId: "AKIAIOSFODNN7EXAMPLE2",
-    secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY2",
-    createdAt: "2023-03-10T11:05:17",
-    lastUsed: "2023-05-10T12:15:40",
-    status: "expired",
-  },
-  {
-    id: 4,
-    userId: "user101",
-    username: "박민수",
-    email: "park@example.com",
-    accessKeyId: "AKIAIOSFODNN7EXAMPLE3",
-    secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY3",
-    createdAt: "2023-04-05T09:30:22",
-    lastUsed: "2023-05-12T18:20:10",
-    status: "active",
-  },
-  {
-    id: 5,
-    userId: "user202",
-    username: "정지훈",
-    email: "jung@example.com",
-    accessKeyId: "AKIAIOSFODNN7EXAMPLE4",
-    secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY4",
-    createdAt: "2023-04-20T14:45:33",
-    lastUsed: null,
-    status: "pending",
-  },
-];
+// Mock API keys data
+const mockApiKeys = Array.from({ length: 50 }, (_, i) => ({
+  id: i + 1,
+  merchant: `가맹점 ${String.fromCharCode(65 + (i % 26))}`,
+  apiKeyName: `API Key ${i + 1}`,
+  accessKey: `AKIA${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
+  status: i % 3 === 0 ? "expired" : "active",
+  createdAt: new Date(2023, i % 12, (i % 28) + 1),
+  lastUsed: i % 5 === 0 ? null : new Date(2023, i % 12, (i % 28) + 5),
+  expiresAt: i % 3 === 0 ? new Date(2023, i % 12, (i % 28) + 10) : null,
+}));
 
-export default function AdminTokensPage() {
-  const [tokens, setTokens] = useState(mockTokens);
+export default function AdminApiKeysPage() {
+  const [apiKeys, setApiKeys] = useState(mockApiKeys);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  const [activeDropdown, setActiveDropdown] = useState(null);
-  const [sortConfig, setSortConfig] = useState({
-    key: "createdAt",
-    direction: "desc",
+  const [filters, setFilters] = useState({
+    status: [],
+  });
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
+
+  const filteredApiKeys = apiKeys.filter((key) => {
+    const matchesSearch =
+      key.merchant.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      key.apiKeyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      key.accessKey.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      filters.status.length === 0 || filters.status.includes(key.status);
+
+    return matchesSearch && matchesStatus;
   });
 
-  // Filter api-keys
-  const filteredTokens = tokens.filter(
-    (token) =>
-      token.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      token.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      token.accessKeyId.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Sort api-keys
-  const sortedTokens = [...filteredTokens].sort((a, b) => {
-    if (a[sortConfig.key] < b[sortConfig.key]) {
-      return sortConfig.direction === "asc" ? -1 : 1;
-    }
-    if (a[sortConfig.key] > b[sortConfig.key]) {
-      return sortConfig.direction === "asc" ? 1 : -1;
-    }
-    return 0;
-  });
-
-  // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = sortedTokens.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(sortedTokens.length / itemsPerPage);
+  const currentItems = filteredApiKeys.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredApiKeys.length / itemsPerPage);
 
-  // Sorting handler
-  const requestSort = (key) => {
-    let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-    setSortConfig({ key, direction });
+  const handleDelete = (id) => {
+    setApiKeys(apiKeys.filter((key) => key.id !== id));
   };
 
-  const toggleDropdown = (tokenId) => {
-    setActiveDropdown(activeDropdown === tokenId ? null : tokenId);
+  const exportToCSV = () => {
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [
+        "ID,Merchant,API Key Name,Access Key,Status,Created At,Last Used,Expires At",
+      ]
+        .concat(
+          filteredApiKeys.map(
+            (key) =>
+              `${key.id},${key.merchant},${key.apiKeyName},${key.accessKey},${
+                key.status
+              },${key.createdAt?.toISOString()},${
+                key.lastUsed?.toISOString() || "-"
+              },${key.expiresAt?.toISOString() || "-"}`
+          )
+        )
+        .join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "api_keys.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
-  const handleDeleteToken = (tokenId) => {
-    setTokens(tokens.filter((token) => token.id !== tokenId));
-    setActiveDropdown(null);
-  };
+  const formatDate = (date) =>
+    date ? new Intl.DateTimeFormat("ko-KR").format(date) : "-";
 
-  // Status badge component
-  const StatusBadge = ({ status }) => {
-    const statusStyles = {
-      active: "bg-green-100 text-green-800",
-      expired: "bg-gray-100 text-gray-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      revoked: "bg-red-100 text-red-800",
-    };
-
-    const statusText = {
-      active: "활성",
-      expired: "만료된",
-      pending: "대기중",
-      revoked: "취소됨",
-    };
-
-    return (
-      <span
-        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-          statusStyles[status] || "bg-gray-100 text-gray-800"
-        }`}
-      >
-        {statusText[status] || status}
-      </span>
-    );
+  const toggleStatusFilter = (status) => {
+    setFilters((prev) => ({
+      ...prev,
+      status: prev.status.includes(status)
+        ? prev.status.filter((s) => s !== status)
+        : [...prev.status, status],
+    }));
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">관리자 API 토큰 관리</h1>
+        <h1 className="text-2xl font-bold">관리자 API 키 관리</h1>
         <p className="text-[#5E99D6] mt-1">
-          모든 사용자에게 발급된 API 키를 관리하고 상태를 변경할 수 있습니다.
+          모든 가맹점의 API 키를 한눈에 확인하고 관리합니다.
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between gap-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5E99D6]" />
-          <input
-            type="text"
-            placeholder="사용자명, 이메일, 토큰 검색"
-            className="pl-10 pr-4 py-2 border border-[#CDE5FF] rounded-md w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#81B9F8]"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      <div className="flex flex-col lg:flex-row gap-4 justify-between">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="relative w-full max-w-xs">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5E99D6]" />
+            <input
+              type="text"
+              placeholder="가맹점, API Key 이름 또는 Access Key 검색"
+              className="pl-10 pr-4 py-2 border border-[#CDE5FF] rounded-md w-full focus:outline-none focus:ring-2 focus:ring-[#81B9F8]"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="relative">
+            <button
+              className="inline-flex items-center gap-2 px-4 py-2 border border-[#CDE5FF] rounded-md hover:bg-[#F6FBFF]"
+              onClick={() => setShowFilterMenu(!showFilterMenu)}
+            >
+              <Filter className="h-4 w-4 text-[#5E99D6]" />
+              필터
+              {filters.status.length > 0 && (
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0067AC] text-[10px] text-white">
+                  {filters.status.length}
+                </span>
+              )}
+            </button>
+            {showFilterMenu && (
+              <div className="absolute top-full mt-1 left-0 z-10 w-72 bg-white rounded-md border border-[#CDE5FF] p-4 shadow-md">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="font-medium">필터</h4>
+                  <button
+                    className="text-[#5E99D6] text-sm hover:underline"
+                    onClick={() => setFilters({ status: [] })}
+                  >
+                    초기화
+                  </button>
+                </div>
+                <div>
+                  <h5 className="text-sm font-medium mb-2">상태</h5>
+                  <div className="flex flex-wrap gap-2">
+                    {["active", "expired"].map((status) => (
+                      <button
+                        key={status}
+                        className={`px-3 py-1 rounded-full text-xs ${
+                          filters.status.includes(status)
+                            ? "bg-[#0067AC] text-white"
+                            : "bg-[#F6FBFF] text-[#5E99D6] border border-[#CDE5FF]"
+                        }`}
+                        onClick={() => toggleStatusFilter(status)}
+                      >
+                        {status === "active" ? "활성" : "만료됨"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-        <button className="inline-flex items-center justify-center rounded-md bg-[#0067AC] px-4 py-2 text-white hover:bg-[#397AB4]">
-          새 토큰 발급
+        <button
+          onClick={exportToCSV}
+          className="inline-flex items-center gap-2 rounded-md bg-white border border-[#CDE5FF] px-4 py-2 text-[#0067AC] hover:bg-[#F6FBFF] transition-colors"
+        >
+          <FileDown className="h-4 w-4" />
+          CSV로 내보내기
         </button>
       </div>
 
-      <div className="rounded-lg border border-[#CDE5FF] bg-white overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-[#F6FBFF] text-left text-sm text-[#0067AC]">
-              <tr>
-                <th
-                  className="px-6 py-3 cursor-pointer"
-                  onClick={() => requestSort("username")}
-                >
-                  <div className="inline-flex items-center gap-1">
-                    사용자
-                    {sortConfig.key === "username" && (
-                      <ArrowDownUp className="h-3 w-3" />
-                    )}
-                  </div>
-                </th>
-                <th
-                  className="px-6 py-3 cursor-pointer"
-                  onClick={() => requestSort("email")}
-                >
-                  <div className="inline-flex items-center gap-1">
-                    이메일
-                    {sortConfig.key === "email" && (
-                      <ArrowDownUp className="h-3 w-3" />
-                    )}
-                  </div>
-                </th>
-                <th className="px-6 py-3">Access Key</th>
-                <th
-                  className="px-6 py-3 cursor-pointer"
-                  onClick={() => requestSort("status")}
-                >
-                  <div className="inline-flex items-center gap-1">
-                    상태
-                    {sortConfig.key === "status" && (
-                      <ArrowDownUp className="h-3 w-3" />
-                    )}
-                  </div>
-                </th>
-                <th
-                  className="px-6 py-3 cursor-pointer"
-                  onClick={() => requestSort("createdAt")}
-                >
-                  <div className="inline-flex items-center gap-1">
-                    생성일
-                    {sortConfig.key === "createdAt" && (
-                      <ArrowDownUp className="h-3 w-3" />
-                    )}
-                  </div>
-                </th>
-                <th
-                  className="px-6 py-3 cursor-pointer"
-                  onClick={() => requestSort("lastUsed")}
-                >
-                  <div className="inline-flex items-center gap-1">
-                    마지막 사용
-                    {sortConfig.key === "lastUsed" && (
-                      <ArrowDownUp className="h-3 w-3" />
-                    )}
-                  </div>
-                </th>
-                <th className="px-6 py-3">작업</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#CDE5FF]">
-              {currentItems.length > 0 ? (
-                currentItems.map((token) => (
-                  <tr key={token.id} className="hover:bg-[#F6FBFF]">
-                    <td className="px-6 py-4">{token.username}</td>
-                    <td className="px-6 py-4">{token.email}</td>
-                    <td
-                      className="px-6 py-4 font-mono text-xs truncate max-w-[100px]"
-                      title={token.accessKeyId}
-                    >
-                      {token.accessKeyId}
-                    </td>
-                    <td className="px-6 py-4">
-                      <StatusBadge status={token.status} />
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      {new Date(token.createdAt).toLocaleString("ko-KR")}
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      {token.lastUsed
-                        ? new Date(token.lastUsed).toLocaleString("ko-KR")
-                        : "사용 내역 없음"}
-                    </td>
-                    <td className="px-6 py-4 relative">
-                      <button
-                        className="text-[#5E99D6] hover:text-[#0067AC]"
-                        onClick={() => toggleDropdown(token.id)}
-                      >
-                        <MoreHorizontal className="h-5 w-5" />
-                      </button>
-                      {activeDropdown === token.id && (
-                        <div className="absolute right-6 mt-1 w-48 rounded-md border border-[#CDE5FF] bg-white p-2 shadow-md z-10">
-                          <button
-                            className="flex w-full items-center rounded-md px-3 py-2 text-sm text-[#FA333F] hover:bg-[#F6FBFF]"
-                            onClick={() => handleDeleteToken(token.id)}
-                          >
-                            토큰 삭제
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-6 py-8 text-center text-[#5E99D6]"
+      <div className="bg-white rounded-lg border border-[#CDE5FF] overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-[#F6FBFF]">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                API Key ID
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                가맹점
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                Access Key
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                상태
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                생성일
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                마지막 사용 시간
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                만료일
+              </th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                작업
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#CDE5FF]">
+            {currentItems.map((key) => (
+              <tr key={key.id}>
+                <td className="px-6 py-4">{key.id}</td>
+                <td className="px-6 py-4">{key.merchant}</td>
+                <td className="px-6 py-4 font-mono text-sm truncate max-w-[150px]">
+                  {key.accessKey}
+                </td>
+                <td className="px-6 py-4">
+                  {key.status === "active" ? "활성" : "만료됨"}
+                </td>
+                <td className="px-6 py-4">{formatDate(key.createdAt)}</td>
+                <td className="px-6 py-4">{formatDate(key.lastUsed)}</td>
+                <td className="px-6 py-4">{formatDate(key.expiresAt)}</td>
+                <td className="px-6 py-4 text-right">
+                  <button
+                    className="text-[#FA333F] hover:text-red-600"
+                    onClick={() => handleDelete(key.id)}
+                    title="API 키 삭제"
                   >
-                    발급된 토큰이 없거나 검색 조건과 일치하는 결과가 없습니다.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {sortedTokens.length > 0 && (
-          <div className="flex items-center justify-between border-t border-[#CDE5FF] bg-[#F6FBFF] px-6 py-3">
-            <div className="text-sm text-[#5E99D6]">
-              전체 {sortedTokens.length}개 항목 중 {indexOfFirstItem + 1} -{" "}
-              {Math.min(indexOfLastItem, sortedTokens.length)}번째 표시
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                disabled={currentPage <= 1}
-                onClick={() => setCurrentPage(currentPage - 1)}
-                className="inline-flex items-center justify-center rounded-md border border-[#CDE5FF] bg-white p-1 text-[#0067AC] hover:bg-[#F6FBFF] disabled:opacity-40"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <span className="text-sm text-[#0067AC]">
-                {currentPage} / {totalPages}
-              </span>
-              <button
-                disabled={currentPage >= totalPages}
-                onClick={() => setCurrentPage(currentPage + 1)}
-                className="inline-flex items-center justify-center rounded-md border border-[#CDE5FF] bg-white p-1 text-[#0067AC] hover:bg-[#F6FBFF] disabled:opacity-40"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        )}
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+
+      {/* Pagination */}
+      {filteredApiKeys.length > 0 && (
+        <div className="flex items-center justify-between border-t border-[#CDE5FF] bg-[#F6FBFF] px-6 py-3">
+          <div className="text-sm text-[#5E99D6]">
+            전체 {filteredApiKeys.length}개 항목 중 {indexOfFirstItem + 1} -{" "}
+            {Math.min(indexOfLastItem, filteredApiKeys.length)}번째 표시
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              disabled={currentPage <= 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+              className="inline-flex items-center justify-center rounded-md border border-[#CDE5FF] bg-white p-1 text-[#0067AC] hover:bg-[#F6FBFF] disabled:opacity-40"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <span className="text-sm text-[#0067AC]">
+              {currentPage} / {totalPages}
+            </span>
+            <button
+              disabled={currentPage >= totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+              className="inline-flex items-center justify-center rounded-md border border-[#CDE5FF] bg-white p-1 text-[#0067AC] hover:bg-[#F6FBFF] disabled:opacity-40"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
