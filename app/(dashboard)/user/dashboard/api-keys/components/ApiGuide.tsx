@@ -14,7 +14,7 @@ import {
   javascriptWebhookSample,
   pythonWebhookSample,
   javaWebhookSample,
-} from "./code-samples";
+} from "@/code-samples";
 
 // 탭 관련 타입 정의
 type CodeLanguage = "javascript" | "python" | "java" | "rest";
