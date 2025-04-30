@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import {
-  AlertTriangle,
   Check,
   Copy,
   Key,
@@ -11,11 +10,9 @@ import {
   Info,
   Calendar,
   Clock,
-  Download,
   XCircle,
   TagIcon,
   Filter,
-  ChevronDown,
   Activity,
 } from "lucide-react";
 import { TokenStatusBadge } from "./TokenStatusBadge";
@@ -32,6 +29,28 @@ interface ApiKey {
   expiresAt: Date | null;
   status: "active" | "expiring" | "inactive";
 }
+
+// 토큰 상태 확인 함수 추가
+const checkTokenStatus = (
+  expiresAt: Date | null
+): "active" | "expiring" | "inactive" => {
+  if (!expiresAt) return "active"; // 만료일이 없으면 항상 활성 상태
+
+  const now = new Date();
+
+  // 이미 만료된 경우
+  if (expiresAt < now) {
+    return "inactive";
+  }
+
+  // 만료까지 남은 일수 계산
+  const daysRemaining = Math.ceil(
+    (expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  // 30일 이내에 만료되면 "만료 예정" 상태로 표시
+  return daysRemaining <= 30 ? "expiring" : "active";
+};
 
 // 모달 컴포넌트 임포트
 import CreateApiKeyModal from "./modals/CreateApiKeyModal";
@@ -92,14 +111,20 @@ export default function ApiKeysList() {
   // 토큰 상태별 통계
   const tokenStats = {
     total: apiKeys.length,
-    active: apiKeys.filter((key) => key.status === "active").length,
+    active: apiKeys.filter(
+      (key) => key.status === "active" || key.status === "expiring"
+    ).length, // 활성 토큰은 만료 예정 토큰도 포함
     expiring: apiKeys.filter((key) => key.status === "expiring").length,
     inactive: apiKeys.filter((key) => key.status === "inactive").length,
   };
 
   // 필터링된 API 키 목록
   const filteredApiKeys = filterStatus
-    ? apiKeys.filter((key) => key.status === filterStatus)
+    ? filterStatus === "active"
+      ? apiKeys.filter(
+          (key) => key.status === "active" || key.status === "expiring"
+        ) // active 필터링 시 expiring도 포함
+      : apiKeys.filter((key) => key.status === filterStatus)
     : apiKeys;
 
   // 날짜 포맷팅 유틸리티
@@ -192,7 +217,8 @@ export default function ApiKeysList() {
         createdAt: new Date(),
         lastUsed: null,
         expiresAt,
-        status: expiresInDays <= 30 ? "expiring" : "active",
+        // 만료일에 따라 상태 결정
+        status: checkTokenStatus(expiresAt),
       };
 
       setApiKeys([newKey, ...apiKeys]);
@@ -229,19 +255,12 @@ export default function ApiKeysList() {
       setApiKeys(
         apiKeys.map((key) => {
           if (key.id === selectedKeyForExpiry) {
-            // 만료일에 따라 상태 업데이트
-            const daysRemaining = getDaysRemaining(expiryDate);
-            let status: "active" | "expiring" | "inactive" = "active";
-
-            if (daysRemaining !== null) {
-              if (daysRemaining === 0) {
-                status = "inactive";
-              } else if (daysRemaining <= 30) {
-                status = "expiring";
-              }
-            }
-
-            return { ...key, expiresAt: expiryDate, status };
+            return {
+              ...key,
+              expiresAt: expiryDate,
+              // 새 만료일에 따라 상태 업데이트
+              status: checkTokenStatus(expiryDate),
+            };
           }
           return key;
         })
