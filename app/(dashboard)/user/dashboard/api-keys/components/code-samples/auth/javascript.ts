@@ -1,16 +1,16 @@
-export const javascriptAuthSample = `// API 키를 사용한 액세스 토큰 발급 요청
+export const javascriptAuthSample = `// Access Key ID와 Secret Key를 사용한 액세스 토큰 발급 요청
 const axios = require('axios');
 
 async function getAccessToken() {
-  const API_KEY = 'your_api_key';
-  const API_SECRET = 'your_api_secret';
+  const ACCESS_KEY_ID = 'your_access_key_id';
+  const SECRET_KEY = 'your_secret_key';
   
   try {
     const response = await axios.post(
       'https://api.payment-system.com/v1/auth/token', 
       {
-        api_key: API_KEY,
-        api_secret: API_SECRET
+        access_key_id: ACCESS_KEY_ID,
+        secret_key: SECRET_KEY
       }
     );
     

@@ -1,4 +1,4 @@
-export const javaAuthSample = `// API 키를 사용한 액세스 토큰 발급 요청
+export const javaAuthSample = `// Access Key ID와 Secret Key를 사용한 액세스 토큰 발급 요청
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -11,8 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 
 public class TokenManager {
-    private static final String API_KEY = "your_api_key";
-    private static final String API_SECRET = "your_api_secret";
+    private static final String ACCESS_KEY_ID = "your_access_key_id";
+    private static final String SECRET_KEY = "your_secret_key";
     private static final String TOKEN_URL = "https://api.payment-system.com/v1/auth/token";
     
     private static String accessToken;
@@ -21,12 +21,12 @@ public class TokenManager {
     private static final ObjectMapper mapper = new ObjectMapper();
     
     /**
-     * API 키와 시크릿을 사용하여 액세스 토큰을 발급받는 함수
+     * Access Key ID와 Secret Key를 사용하여 액세스 토큰을 발급받는 함수
      */
     public static String getAccessToken() throws IOException {
         FormBody formBody = new FormBody.Builder()
-                .add("api_key", API_KEY)
-                .add("api_secret", API_SECRET)
+                .add("access_key_id", ACCESS_KEY_ID)
+                .add("secret_key", SECRET_KEY)
                 .build();
                 
         Request request = new Request.Builder()

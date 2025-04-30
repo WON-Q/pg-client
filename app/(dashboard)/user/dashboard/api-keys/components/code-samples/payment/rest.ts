@@ -2,8 +2,8 @@ export const restPaymentSample = `# 발급받은 액세스 토큰으로 결제 �
 
 # 1. 먼저 액세스 토큰을 발급받습니다
 TOKEN_RESPONSE=$(curl -s -X POST https://api.payment-system.com/v1/auth/token \\
-  -d "api_key=your_api_key" \\
-  -d "api_secret=your_api_secret")
+  -d "access_key_id=your_access_key_id" \\
+  -d "secret_key=your_secret_key")
 
 # 2. 액세스 토큰 추출
 ACCESS_TOKEN=$(echo $TOKEN_RESPONSE | jq -r '.response.access_token')

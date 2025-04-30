@@ -1,10 +1,10 @@
-export const pythonAuthSample = `# API 키를 사용한 액세스 토큰 발급 요청
+export const pythonAuthSample = `# Access Key ID와 Secret Key를 사용한 액세스 토큰 발급 요청
 import time
 import requests
 from datetime import datetime
 
-API_KEY = 'your_api_key'
-API_SECRET = 'your_api_secret'
+ACCESS_KEY_ID = 'your_access_key_id'
+SECRET_KEY = 'your_secret_key'
 
 # 토큰 정보를 저장할 변수
 token_info = {
@@ -13,13 +13,13 @@ token_info = {
 }
 
 def get_access_token():
-    """API 키와 시크릿을 사용하여 액세스 토큰을 발급받는 함수"""
+    """Access Key ID와 Secret Key를 사용하여 액세스 토큰을 발급받는 함수"""
     try:
         response = requests.post(
             'https://api.payment-system.com/v1/auth/token',
             data={
-                'api_key': API_KEY,
-                'api_secret': API_SECRET
+                'access_key_id': ACCESS_KEY_ID,
+                'secret_key': SECRET_KEY
             }
         )
         response.raise_for_status()

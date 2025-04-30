@@ -16,8 +16,27 @@ import {
   javaWebhookSample,
 } from "./code-samples";
 
+// 탭 관련 타입 정의
+type CodeLanguage = "javascript" | "python" | "java" | "rest";
+type WebhookLanguage = "javascript" | "python" | "java";
+
+interface Tab {
+  id: CodeLanguage | WebhookLanguage;
+  label: string;
+}
+
+interface CodeTabsProps {
+  tabs: Tab[];
+  activeTab: string;
+  setActiveTab: (id: CodeLanguage | WebhookLanguage) => void;
+}
+
 // 코드 예제를 위한 탭 인터페이스 컴포넌트
-const CodeTabs = ({ tabs, activeTab, setActiveTab }) => {
+const CodeTabs: React.FC<CodeTabsProps> = ({
+  tabs,
+  activeTab,
+  setActiveTab,
+}) => {
   return (
     <div className="flex space-x-2 mb-4 border-b overflow-x-auto">
       {tabs.map((tab) => (
@@ -38,32 +57,34 @@ const CodeTabs = ({ tabs, activeTab, setActiveTab }) => {
 };
 
 export default function ApiGuide() {
-  const [authCodeTab, setAuthCodeTab] = useState("javascript");
-  const [paymentCodeTab, setPaymentCodeTab] = useState("javascript");
-  const [webhookCodeTab, setWebhookCodeTab] = useState("javascript");
+  const [authCodeTab, setAuthCodeTab] = useState<CodeLanguage>("javascript");
+  const [paymentCodeTab, setPaymentCodeTab] =
+    useState<CodeLanguage>("javascript");
+  const [webhookCodeTab, setWebhookCodeTab] =
+    useState<WebhookLanguage>("javascript");
 
-  const authCodeTabs = [
+  const authCodeTabs: Tab[] = [
     { id: "javascript", label: "JavaScript" },
     { id: "python", label: "Python" },
     { id: "java", label: "Java" },
     { id: "rest", label: "REST (cURL)" },
   ];
 
-  const paymentCodeTabs = [
+  const paymentCodeTabs: Tab[] = [
     { id: "javascript", label: "JavaScript" },
     { id: "python", label: "Python" },
     { id: "java", label: "Java" },
     { id: "rest", label: "REST (cURL)" },
   ];
 
-  const webhookCodeTabs = [
+  const webhookCodeTabs: Tab[] = [
     { id: "javascript", label: "JavaScript (Express)" },
     { id: "python", label: "Python (Flask)" },
     { id: "java", label: "Java (Spring)" },
   ];
 
   // 인증 코드 예제 매핑
-  const authCodeExamples = {
+  const authCodeExamples: Record<CodeLanguage, string> = {
     javascript: javascriptAuthSample,
     python: pythonAuthSample,
     java: javaAuthSample,
@@ -71,7 +92,7 @@ export default function ApiGuide() {
   };
 
   // 결제 코드 예제 매핑
-  const paymentCodeExamples = {
+  const paymentCodeExamples: Record<CodeLanguage, string> = {
     javascript: javascriptPaymentSample,
     python: pythonPaymentSample,
     java: javaPaymentSample,
@@ -79,7 +100,7 @@ export default function ApiGuide() {
   };
 
   // 웹훅 코드 예제 매핑
-  const webhookCodeExamples = {
+  const webhookCodeExamples: Record<WebhookLanguage, string> = {
     javascript: javascriptWebhookSample,
     python: pythonWebhookSample,
     java: javaWebhookSample,
@@ -99,9 +120,9 @@ export default function ApiGuide() {
         </h3>
         <div className="bg-[#F6FBFF] rounded-md p-4">
           <p className="mb-3">
-            API에 접근하기 위해서는 먼저 발급받은 API 키(api_key)와 API
-            시크릿(api_secret)을 사용하여 액세스 토큰을 발급받아야 합니다. 이
-            토큰은 API에 대한 실제 요청에 사용됩니다.
+            API에 접근하기 위해서는 먼저 발급받은 Access Key ID와 Secret Key를
+            사용하여 액세스 토큰을 발급받아야 합니다. 이 토큰은 API에 대한 실제
+            요청에 사용됩니다.
           </p>
 
           <div className="bg-amber-50 border border-amber-200 rounded-md p-3 mb-3">
@@ -133,10 +154,10 @@ export default function ApiGuide() {
                 <strong>파라미터:</strong>
                 <ul className="list-none pl-5 mt-1">
                   <li>
-                    • <code>api_key</code>: API 키 (필수)
+                    • <code>access_key_id</code>: Access Key ID (필수)
                   </li>
                   <li>
-                    • <code>api_secret</code>: API 시크릿 (필수)
+                    • <code>secret_key</code>: Secret Key (필수)
                   </li>
                 </ul>
               </li>
@@ -146,7 +167,7 @@ export default function ApiGuide() {
           <CodeTabs
             tabs={authCodeTabs}
             activeTab={authCodeTab}
-            setActiveTab={setAuthCodeTab}
+            setActiveTab={(id) => setAuthCodeTab(id as CodeLanguage)}
           />
 
           <pre className="bg-[#eaf5ff] rounded-md p-3 overflow-x-auto">
@@ -173,7 +194,7 @@ export default function ApiGuide() {
             <pre className="bg-red-100/50 rounded p-2 mt-1 overflow-x-auto">
               <code>{`{
   "code": 401,
-  "message": "Invalid API key or secret",
+  "message": "Invalid Access Key ID or Secret Key",
   "response": null
 }`}</code>
             </pre>
@@ -235,7 +256,7 @@ export default function ApiGuide() {
           <CodeTabs
             tabs={paymentCodeTabs}
             activeTab={paymentCodeTab}
-            setActiveTab={setPaymentCodeTab}
+            setActiveTab={(id) => setPaymentCodeTab(id as CodeLanguage)}
           />
 
           <pre className="bg-[#eaf5ff] rounded-md p-3 overflow-x-auto">
@@ -278,7 +299,6 @@ export default function ApiGuide() {
             처리할 수 있습니다.
           </p>
 
-          {/* ... 웹훅 관련 부분 ... */}
           <div className="bg-[#eaf5ff] rounded-md p-4 my-3">
             <h4 className="font-medium mb-2">웹훅 이벤트 종류</h4>
             <ul className="list-disc list-inside space-y-1 text-sm">
@@ -303,7 +323,7 @@ export default function ApiGuide() {
           <CodeTabs
             tabs={webhookCodeTabs}
             activeTab={webhookCodeTab}
-            setActiveTab={setWebhookCodeTab}
+            setActiveTab={(id) => setWebhookCodeTab(id as WebhookLanguage)}
           />
 
           <pre className="bg-[#eaf5ff] rounded-md p-3 overflow-x-auto">
@@ -342,8 +362,8 @@ export default function ApiGuide() {
         <div className="bg-[#F6FBFF] rounded-md p-4">
           <ul className="list-disc list-inside space-y-2">
             <li>
-              API 키와 시크릿은 서버 측에서만 사용하고, 클라이언트에 노출하지
-              마세요.
+              Access Key ID와 Secret Key는 서버 측에서만 사용하고, 클라이언트에
+              노출하지 마세요.
             </li>
             <li>
               액세스 토큰은 안전하게 저장하고, 만료 전에 자동으로 갱신하는

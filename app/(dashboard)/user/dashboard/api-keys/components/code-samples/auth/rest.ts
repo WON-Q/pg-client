@@ -1,8 +1,8 @@
-export const restAuthSample = `# API 키를 사용한 액세스 토큰 발급 요청 (cURL)
+export const restAuthSample = `# Access Key ID와 Secret Key를 사용한 액세스 토큰 발급 요청 (cURL)
 
 curl -X POST https://api.payment-system.com/v1/auth/token \\
-  -d "api_key=your_api_key" \\
-  -d "api_secret=your_api_secret"
+  -d "access_key_id=your_access_key_id" \\
+  -d "secret_key=your_secret_key"
 
 # 응답 예시
 # {
