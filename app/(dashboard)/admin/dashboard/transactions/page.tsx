@@ -21,6 +21,7 @@ const mockTransactions = [
     method: "card",
     date: "2023-05-15T14:23:45",
     customer: "홍길동",
+    merchant: "가맹점 A",
   },
   {
     id: "txn_2345678901",
@@ -29,6 +30,7 @@ const mockTransactions = [
     method: "vbank",
     date: "2023-05-14T09:12:30",
     customer: "김철수",
+    merchant: "가맹점 B",
   },
   {
     id: "txn_3456789012",
@@ -37,6 +39,7 @@ const mockTransactions = [
     method: "card",
     date: "2023-05-14T18:45:22",
     customer: "이영희",
+    merchant: "가맹점 C",
   },
   {
     id: "txn_4567890123",
@@ -45,6 +48,7 @@ const mockTransactions = [
     method: "card",
     date: "2023-05-13T11:05:17",
     customer: "박민수",
+    merchant: "가맹점 A",
   },
   {
     id: "txn_5678901234",
@@ -53,10 +57,11 @@ const mockTransactions = [
     method: "vbank",
     date: "2023-05-12T16:30:10",
     customer: "정지훈",
+    merchant: "가맹점 B",
   },
 ];
 
-export default function UserTransactionsPage() {
+export default function AdminTransactionsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -67,7 +72,6 @@ export default function UserTransactionsPage() {
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [filters, setFilters] = useState({
     status: [],
-    method: [],
   });
 
   // Sort and filter transactions
@@ -85,17 +89,14 @@ export default function UserTransactionsPage() {
     // Search filter
     const matchesSearch =
       txn.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      txn.customer.toLowerCase().includes(searchTerm.toLowerCase());
+      txn.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      txn.merchant.toLowerCase().includes(searchTerm.toLowerCase());
 
     // Status filter
     const matchesStatus =
       filters.status.length === 0 || filters.status.includes(txn.status);
 
-    // Method filter
-    const matchesMethod =
-      filters.method.length === 0 || filters.method.includes(txn.method);
-
-    return matchesSearch && matchesStatus && matchesMethod;
+    return matchesSearch && matchesStatus;
   });
 
   // Pagination
@@ -123,15 +124,6 @@ export default function UserTransactionsPage() {
       status: prev.status.includes(status)
         ? prev.status.filter((s) => s !== status)
         : [...prev.status, status],
-    }));
-  };
-
-  const toggleMethodFilter = (method) => {
-    setFilters((prev) => ({
-      ...prev,
-      method: prev.method.includes(method)
-        ? prev.method.filter((m) => m !== method)
-        : [...prev.method, method],
     }));
   };
 
@@ -166,9 +158,9 @@ export default function UserTransactionsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">내 트랜잭션 로그</h1>
+        <h1 className="text-2xl font-bold">관리자 트랜잭션 로그</h1>
         <p className="text-[#5E99D6] mt-1">
-          요청한 결제 트랜잭션 기록을 확인합니다.
+          모든 가맹점의 결제 트랜잭션 기록을 확인합니다.
         </p>
       </div>
 
@@ -178,7 +170,7 @@ export default function UserTransactionsPage() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5E99D6]" />
             <input
               type="text"
-              placeholder="트랜잭션 ID 또는 고객명 검색"
+              placeholder="트랜잭션 ID, 고객명 또는 가맹점 검색"
               className="pl-10 pr-4 py-2 border border-[#CDE5FF] rounded-md w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#81B9F8]"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -192,9 +184,9 @@ export default function UserTransactionsPage() {
             >
               <Filter className="h-4 w-4 text-[#5E99D6]" />
               필터
-              {(filters.status.length > 0 || filters.method.length > 0) && (
+              {filters.status.length > 0 && (
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0067AC] text-[10px] text-white">
-                  {filters.status.length + filters.method.length}
+                  {filters.status.length}
                 </span>
               )}
             </button>
@@ -205,13 +197,13 @@ export default function UserTransactionsPage() {
                   <h4 className="font-medium">필터</h4>
                   <button
                     className="text-[#5E99D6] text-sm hover:underline"
-                    onClick={() => setFilters({ status: [], method: [] })}
+                    onClick={() => setFilters({ status: [] })}
                   >
                     초기화
                   </button>
                 </div>
 
-                <div className="mb-4">
+                <div>
                   <h5 className="text-sm font-medium mb-2">상태</h5>
                   <div className="flex flex-wrap gap-2">
                     {["success", "failed", "pending"].map((status) => (
@@ -229,25 +221,6 @@ export default function UserTransactionsPage() {
                           : status === "failed"
                           ? "실패"
                           : "대기중"}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h5 className="text-sm font-medium mb-2">결제 방법</h5>
-                  <div className="flex flex-wrap gap-2">
-                    {["card", "vbank"].map((method) => (
-                      <button
-                        key={method}
-                        className={`px-3 py-1 rounded-full text-xs ${
-                          filters.method.includes(method)
-                            ? "bg-[#0067AC] text-white"
-                            : "bg-[#F6FBFF] text-[#5E99D6] border border-[#CDE5FF]"
-                        }`}
-                        onClick={() => toggleMethodFilter(method)}
-                      >
-                        {method === "card" ? "카드" : "가상계좌"}
                       </button>
                     ))}
                   </div>
@@ -275,6 +248,17 @@ export default function UserTransactionsPage() {
                   <div className="inline-flex items-center gap-1">
                     트랜잭션 ID
                     {sortConfig.key === "id" && (
+                      <ArrowDownUp className="h-3 w-3" />
+                    )}
+                  </div>
+                </th>
+                <th
+                  className="px-6 py-3 cursor-pointer"
+                  onClick={() => requestSort("merchant")}
+                >
+                  <div className="inline-flex items-center gap-1">
+                    가맹점
+                    {sortConfig.key === "merchant" && (
                       <ArrowDownUp className="h-3 w-3" />
                     )}
                   </div>
@@ -341,6 +325,7 @@ export default function UserTransactionsPage() {
                 currentItems.map((txn) => (
                   <tr key={txn.id} className="hover:bg-[#F6FBFF]">
                     <td className="px-6 py-4 font-mono text-sm">{txn.id}</td>
+                    <td className="px-6 py-4">{txn.merchant}</td>
                     <td className="px-6 py-4">
                       {txn.amount.toLocaleString()}원
                     </td>
@@ -363,7 +348,7 @@ export default function UserTransactionsPage() {
               ) : (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={7}
                     className="px-6 py-8 text-center text-[#5E99D6]"
                   >
                     트랜잭션 기록이 없거나 검색 조건과 일치하는 결과가 없습니다.
