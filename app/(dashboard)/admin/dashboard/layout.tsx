@@ -49,46 +49,6 @@ export default function AdminDashboardLayout({ children }) {
       path: "/admin/dashboard/transactions",
       icon: <History className="h-5 w-5" />,
     },
-    {
-      name: "가맹점 관리",
-      path: "/admin/dashboard/merchants",
-      icon: <Building className="h-5 w-5" />,
-    },
-    {
-      name: "결제 통계",
-      path: "/admin/dashboard/analytics",
-      icon: <BarChart3 className="h-5 w-5" />,
-    },
-    {
-      name: "시스템 상태",
-      path: "/admin/dashboard/system-status",
-      icon: <Database className="h-5 w-5" />,
-    },
-    {
-      name: "관리자 설정",
-      path: "/admin/dashboard/settings",
-      icon: <Settings className="h-5 w-5" />,
-    },
-    {
-      name: "사용자 피드백",
-      path: "/admin/dashboard/feedback",
-      icon: <Users className="h-5 w-5" />,
-    },
-    {
-      name: "감사 로그",
-      path: "/admin/dashboard/audit-logs",
-      icon: <Shield className="h-5 w-5" />,
-    },
-    {
-      name: "시스템 알림",
-      path: "/admin/dashboard/notifications",
-      icon: <Bell className="h-5 w-5" />,
-    },
-    {
-      name: "API 사용 분석",
-      path: "/admin/dashboard/api-analytics",
-      icon: <BarChart3 className="h-5 w-5" />,
-    },
   ];
 
   return (
@@ -225,19 +185,19 @@ export default function AdminDashboardLayout({ children }) {
           <div className="flex h-full flex-col p-4 overflow-y-auto">
             <nav className="grid gap-2 text-sm flex-grow-0">
               {adminRoutes.map((route) => (
-                  <Link
-                      key={route.path}
-                      href={route.path}
-                      className={cn(
-                          "flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-[#F6FBFF] transition-colors",
-                          pathname === route.path
-                              ? "bg-[#F6FBFF] text-[#0067AC]"
-                              : "text-[#5E99D6]"
-                      )}
-                  >
-                    {route.icon}
-                    <span>{route.name}</span>
-                  </Link>
+                <Link
+                  key={route.path}
+                  href={route.path}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-[#F6FBFF] transition-colors",
+                    pathname === route.path
+                      ? "bg-[#F6FBFF] text-[#0067AC]"
+                      : "text-[#5E99D6]"
+                  )}
+                >
+                  {route.icon}
+                  <span>{route.name}</span>
+                </Link>
               ))}
             </nav>
             <div className="flex-grow"></div>
