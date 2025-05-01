@@ -7,10 +7,8 @@ export { restAuthSample } from "./auth/rest";
 // 결제 샘플 코드
 export { javascriptPaymentSample } from "./payment/javascript";
 export { pythonPaymentSample } from "./payment/python";
-import { javaPaymentSample } from "./payment/java";
-import { restPaymentSample } from "./payment/rest";
-
-export { javaPaymentSample, restPaymentSample };
+export { javaPaymentSample } from "./payment/java";
+export { restPaymentSample } from "./payment/rest";
 
 // 웹훅 샘플 코드
 export { javascriptWebhookSample } from "./webhook/javascript";
