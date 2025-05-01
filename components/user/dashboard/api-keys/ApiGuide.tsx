@@ -11,24 +11,20 @@ import {
   pythonPaymentSample,
   javaPaymentSample,
   restPaymentSample,
-  javascriptWebhookSample,
-  pythonWebhookSample,
-  javaWebhookSample,
 } from "@/code-samples";
 
 // 탭 관련 타입 정의
 type CodeLanguage = "javascript" | "python" | "java" | "rest";
-type WebhookLanguage = "javascript" | "python" | "java";
 
 interface Tab {
-  id: CodeLanguage | WebhookLanguage;
+  id: CodeLanguage;
   label: string;
 }
 
 interface CodeTabsProps {
   tabs: Tab[];
   activeTab: string;
-  setActiveTab: (id: CodeLanguage | WebhookLanguage) => void;
+  setActiveTab: (id: CodeLanguage) => void;
 }
 
 // 코드 예제를 위한 탭 인터페이스 컴포넌트
@@ -60,8 +56,6 @@ export default function ApiGuide() {
   const [authCodeTab, setAuthCodeTab] = useState<CodeLanguage>("javascript");
   const [paymentCodeTab, setPaymentCodeTab] =
     useState<CodeLanguage>("javascript");
-  const [webhookCodeTab, setWebhookCodeTab] =
-    useState<WebhookLanguage>("javascript");
 
   const authCodeTabs: Tab[] = [
     { id: "javascript", label: "JavaScript" },
@@ -75,12 +69,6 @@ export default function ApiGuide() {
     { id: "python", label: "Python" },
     { id: "java", label: "Java" },
     { id: "rest", label: "REST (cURL)" },
-  ];
-
-  const webhookCodeTabs: Tab[] = [
-    { id: "javascript", label: "JavaScript (Express)" },
-    { id: "python", label: "Python (Flask)" },
-    { id: "java", label: "Java (Spring)" },
   ];
 
   // 인증 코드 예제 매핑
@@ -97,13 +85,6 @@ export default function ApiGuide() {
     python: pythonPaymentSample,
     java: javaPaymentSample,
     rest: restPaymentSample,
-  };
-
-  // 웹훅 코드 예제 매핑
-  const webhookCodeExamples: Record<WebhookLanguage, string> = {
-    javascript: javascriptWebhookSample,
-    python: pythonWebhookSample,
-    java: javaWebhookSample,
   };
 
   return (
@@ -284,78 +265,11 @@ export default function ApiGuide() {
         </div>
       </section>
 
-      {/* 3. 웹훅 처리 섹션 */}
+      {/* 3. 보안 권장사항 */}
       <section className="space-y-4">
         <h3 className="text-lg font-medium flex items-center">
           <span className="bg-[#0067AC] text-white rounded-full w-6 h-6 inline-flex items-center justify-center mr-2">
             3
-          </span>
-          웹훅 처리
-        </h3>
-        <div className="bg-[#F6FBFF] rounded-md p-4">
-          <p className="mb-2">
-            결제 상태가 변경될 때마다 설정된 웹훅 URL로 이벤트 알림이
-            전송됩니다. 이를 통해 결제 완료, 실패, 환불 등의 이벤트를 실시간으로
-            처리할 수 있습니다.
-          </p>
-
-          <div className="bg-[#eaf5ff] rounded-md p-4 my-3">
-            <h4 className="font-medium mb-2">웹훅 이벤트 종류</h4>
-            <ul className="list-disc list-inside space-y-1 text-sm">
-              <li>
-                <strong>payment.created</strong> - 결제 요청이 생성됨
-              </li>
-              <li>
-                <strong>payment.completed</strong> - 결제가 성공적으로 완료됨
-              </li>
-              <li>
-                <strong>payment.failed</strong> - 결제 진행 중 오류 발생
-              </li>
-              <li>
-                <strong>payment.cancelled</strong> - 사용자가 결제를 취소함
-              </li>
-              <li>
-                <strong>payment.refunded</strong> - 결제가 환불됨
-              </li>
-            </ul>
-          </div>
-
-          <CodeTabs
-            tabs={webhookCodeTabs}
-            activeTab={webhookCodeTab}
-            setActiveTab={(id) => setWebhookCodeTab(id as WebhookLanguage)}
-          />
-
-          <pre className="bg-[#eaf5ff] rounded-md p-3 overflow-x-auto">
-            <code>{webhookCodeExamples[webhookCodeTab]}</code>
-          </pre>
-
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mt-4 text-sm">
-            <p className="font-medium text-blue-800">웹훅 요청 예시:</p>
-            <pre className="bg-blue-100/50 rounded p-2 mt-1 overflow-x-auto">
-              <code>{`{
-  "type": "payment.completed",
-  "id": "evt_12345",
-  "createdAt": "2023-07-10T09:35:00Z",
-  "data": {
-    "paymentId": "PAY_67890",
-    "orderId": "ORDER_12345",
-    "amount": 10000,
-    "currency": "KRW",
-    "status": "completed",
-    "paidAt": "2023-07-10T09:34:55Z"
-  }
-}`}</code>
-            </pre>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. 보안 권장사항 */}
-      <section className="space-y-4">
-        <h3 className="text-lg font-medium flex items-center">
-          <span className="bg-[#0067AC] text-white rounded-full w-6 h-6 inline-flex items-center justify-center mr-2">
-            4
           </span>
           보안 권장사항
         </h3>

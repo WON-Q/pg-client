@@ -14,7 +14,6 @@ export { javaPaymentSample, restPaymentSample };
 
 // 웹훅 샘플 코드
 export { javascriptWebhookSample } from "./webhook/javascript";
-import { pythonWebhookSample } from "./webhook/python";
-import { javaWebhookSample } from "./webhook/java";
-
-export { pythonWebhookSample, javaWebhookSample };
+export { pythonWebhookSample } from "./webhook/python";
+export { javaWebhookSample } from "./webhook/java";
+export { phpWebhookSample } from "./webhook/php";

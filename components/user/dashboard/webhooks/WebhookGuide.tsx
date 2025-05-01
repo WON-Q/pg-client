@@ -7,12 +7,12 @@ import {
   Info,
   ExternalLink,
 } from "lucide-react";
-import { 
-  nodeJsWebhookSample, 
-  pythonWebhookSample, 
-  phpWebhookSample, 
-  javaWebhookSample 
-} from "@/code-samples/webhook-samples";
+import {
+  javascriptWebhookSample,
+  pythonWebhookSample,
+  phpWebhookSample,
+  javaWebhookSample,
+} from "@/code-samples";
 
 export default function WebhookGuide() {
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
@@ -73,7 +73,7 @@ export default function WebhookGuide() {
 
   // 코드 예제 매핑
   const codeExamples: Record<CodeLanguage, string> = {
-    nodejs: nodeJsWebhookSample,
+    nodejs: javascriptWebhookSample,
     python: pythonWebhookSample,
     php: phpWebhookSample,
     java: javaWebhookSample,
