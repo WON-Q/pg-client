@@ -1,9 +1,22 @@
 "use client";
 
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import {usePathname} from "next/navigation";
-import {Bell, ChevronDown, CreditCard, History, Home, KeyIcon, LogOut, Menu, Settings, User, X,} from "lucide-react";
+import { usePathname } from "next/navigation";
+import {
+  Bell,
+  ChevronDown,
+  CreditCard,
+  History,
+  Home,
+  KeyIcon,
+  LogOut,
+  Menu,
+  Settings,
+  User,
+  X,
+  Radio,
+} from "lucide-react";
 
 // 클래스명을 조건부로 결합하는 헬퍼 함수
 const cn = (...classes) => {
@@ -26,6 +39,11 @@ export default function UserDashboardLayout({ children }) {
       name: "API 키 관리",
       path: "/user/dashboard/api-keys",
       icon: <KeyIcon className="h-5 w-5" />,
+    },
+    {
+      name: "웹훅 관리",
+      path: "/user/dashboard/webhooks",
+      icon: <Radio className="h-5 w-5" />,
     },
     {
       name: "트랜잭션 로그",
