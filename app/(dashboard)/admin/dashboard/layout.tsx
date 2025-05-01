@@ -20,6 +20,7 @@ import {
   Database,
   Wallet,
   Users,
+  Radio,
 } from "lucide-react";
 
 // Helper function to conditionally join class names
@@ -43,6 +44,11 @@ export default function AdminDashboardLayout({ children }) {
       name: "API 키 관리",
       path: "/admin/dashboard/api-keys",
       icon: <KeyIcon className="h-5 w-5" />,
+    },
+    {
+      name: "웹훅 관리",
+      path: "/admin/dashboard/webhooks",
+      icon: <Radio className="h-5 w-5" />,
     },
     {
       name: "트랜잭션 로그",
