@@ -71,7 +71,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/admin/api-keys?page=${page}&size=${size}&sort=${sort}`;
 
     // 인증 토큰 가져오기
-    const authToken = req.cookies.get("authToken")?.value;
+    const authToken = req.headers.get("Authorization")?.replace("Bearer ", "");
 
     // 인증 토큰이 없는 경우
     if (!authToken) {
@@ -87,7 +87,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // 백엔드 API 호출
     const response = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${authToken}`,
+        "Authorization": `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
     });
