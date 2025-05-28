@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { BaseResponse, LoginResponseDto } from "@/types/api";
 
 /**
  * 로그인 페이지
@@ -36,12 +37,19 @@ export default function Login() {
       });
 
       // 응답 데이터 추출
-      const data = await response.json();
+      const data = await response.json() as BaseResponse<LoginResponseDto>;
+      console.log("로그인 응답 데이터:", data);
 
       // 로그인 실패 시
       if (!response.ok) {
         throw new Error(data.message || "로그인 실패");
       }
+
+      // 로그인 성공 시 토큰 저장
+      localStorage.clear(); // 기존 로컬 스토리지 데이터 초기화
+      localStorage.setItem("tokenType", data.data?.token.tokenType || "");
+      localStorage.setItem("accessToken", data.data?.token.accessToken || "");
+      localStorage.setItem("refreshToken", data.data?.token.refreshToken || "");
 
       // 로그인 성공 시 대시보드로 라우팅
       if (isAdmin) {
