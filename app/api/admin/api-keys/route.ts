@@ -4,7 +4,7 @@ import { BaseResponse, Page } from "@/types/api";
 /**
  * ApiKey 목록 조회 API의 개별 ApiKey DTO
  */
-interface ApiKeyResponseDto {
+export interface ApiKeyResponseDto {
   /**
    * API 키 ID
    */
