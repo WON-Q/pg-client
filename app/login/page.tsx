@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 /**
  * 로그인 페이지
@@ -9,16 +10,53 @@ export default function Login() {
   const [email, setEmail] = useState(""); // 이메일 (ID)
   const [password, setPassword] = useState(""); // 비밀번호
   const [isAdmin, setIsAdmin] = useState(false); // 관리자 여부
+  const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지
+  const router = useRouter(); // Next.js 라우터
 
   /**
    * 로그인 폼 제출 처리 함수
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 로그인 시도 정보 콘솔에 출력
-    console.log("Login attempt with:", { email, password, isAdmin });
+    setErrorMessage(""); // 에러 메시지 초기화
 
-    // Todo: 로그인 API 호출로 변경
+    try {
+      // 관리자와 사용자 로그인 엔드포인트 분기
+      const endpoint = isAdmin
+        ? "/api/auth/login/admin"
+        : "/api/auth/login/user";
+
+      // 로그인 요청
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      // 응답 데이터 추출
+      const data = await response.json();
+
+      // 로그인 실패 시
+      if (!response.ok) {
+        throw new Error(data.message || "로그인 실패");
+      }
+
+      // 로그인 성공 시 대시보드로 라우팅
+      if (isAdmin) {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/user/dashboard");
+      }
+
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("알 수 없는 오류가 발생했습니다.");
+      }
+    }
   };
 
   /**
@@ -31,6 +69,7 @@ export default function Login() {
     // 사용자/관리자 전환에 따라 이메일과 비밀번호 초기화
     setEmail("");
     setPassword("");
+    setErrorMessage(""); // 에러 메시지 초기화
   };
 
   /**
@@ -117,6 +156,10 @@ export default function Login() {
               required
             />
           </div>
+
+          {errorMessage && (
+            <p className="text-red-500 text-sm mb-4">{errorMessage}</p>
+          )}
 
           <button
             type="submit"
