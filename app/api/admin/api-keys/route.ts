@@ -33,7 +33,7 @@ interface ApiKeyResponseDto {
   /**
    * 액세스 키 활성화 여부
    */
-  isActive: boolean;
+  active: boolean;
 
   /**
    * 발급 시각
