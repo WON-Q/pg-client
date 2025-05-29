@@ -110,5 +110,21 @@ export interface TokenDto {
    * 리프레시 토큰 만료 시간
    */
   refreshTokenExpiresAt: string;
-
 }
+
+/**
+ * 트랜잭션 상태
+ */
+export type TransactionStatus =
+  | "PENDING"
+  | "CREATED"
+  | "APPROVED"
+  | "CANCELLED"
+  | "FAILED"
+  | "AUTH_FAILED"
+  | "REFUND_FAILED";
+
+/**
+ * 지불 방법
+ */
+export type PaymentMethod = "APP_CARD" | "WOORI_APP_CARD";
