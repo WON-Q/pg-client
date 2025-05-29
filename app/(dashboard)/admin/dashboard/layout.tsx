@@ -45,11 +45,6 @@ export default function AdminDashboardLayout({ children } : AdminDashboardLayout
       icon: <KeyIcon className="h-5 w-5" />,
     },
     {
-      name: "웹훅 관리",
-      path: "/admin/dashboard/webhooks",
-      icon: <Radio className="h-5 w-5" />,
-    },
-    {
       name: "트랜잭션 로그",
       path: "/admin/dashboard/transactions",
       icon: <History className="h-5 w-5" />,
