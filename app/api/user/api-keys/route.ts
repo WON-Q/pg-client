@@ -3,7 +3,7 @@ import { BaseResponse, Page } from "@/types/api";
 import { ApiKeyResponseDto } from "@/types/api";
 
 /**
- * API 키 목록 조회 API (관리자용)
+ * API 키 목록 조회 API (가맹점용)
  *
  * @param req - API 키 목록 조회 요청 정보
  * @returns API 키 목록과 페이징 정보가 포함된 응답
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const sort = searchParams.get("sort") || "id,desc";
 
     // API 키 목록 조회 URL
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/admin/api-keys?page=${page}&size=${size}&sort=${sort}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/api-keys?page=${page}&size=${size}&sort=${sort}`;
 
     // 인증 토큰 가져오기
     const authToken = req.headers.get("Authorization")?.replace("Bearer ", "");
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // 백엔드 API 호출
     const response = await fetch(url, {
       headers: {
-        "Authorization": `Bearer ${authToken}`,
+        Authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
     });
