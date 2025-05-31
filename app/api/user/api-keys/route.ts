@@ -7,7 +7,7 @@ import { ApiKeyResponseDto } from "@/types/api";
  */
 export interface CreateApiKeyRequestDto {
   name: string; // API 키 이름
-  expiresAt: string; // 만료 시각
+  expiresAt: Date; // 만료 시각
 }
 
 /**
@@ -18,8 +18,8 @@ export interface CreateApiKeyResponseDto {
   name: string; // API 키 이름
   accessKey: string; // 액세스 키
   secretKey: string; // 시크릿 키
-  issuedAt: string; // 발급 시각 (ISO 8601 형식)
-  expiresAt: string; // 만료 시각 (ISO 8601 형식)
+  issuedAt: Date; // 발급 시각 (ISO 8601 형식)
+  expiresAt: Date; // 만료 시각 (ISO 8601 형식)
 }
 
 /**
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const sort = searchParams.get("sort") || "id,desc";
 
     // API 키 목록 조회 URL
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/api-keys?page=${page}&size=${size}&sort=${sort}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/merchants/api-keys?page=${page}&size=${size}&sort=${sort}`;
 
     // 인증 토큰 가져오기
     const authToken = req.headers.get("Authorization")?.replace("Bearer ", "");
@@ -116,6 +116,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     // 요청 본문에서 데이터 추출
     const requestData: CreateApiKeyRequestDto = await req.json();
+
+    console.log("API 키 생성 요청 데이터:", requestData);
+    console.log(requestData.expiresAt);
 
     // 백엔드 API 호출
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/merchants/api-keys`, {
