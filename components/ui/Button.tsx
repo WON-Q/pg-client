@@ -132,30 +132,25 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         case "primary":
           return {
             backgroundColor: colors.primary.DEFAULT,
-            "--tw-ring-color": colors.primary.DEFAULT,
-          } as React.CSSProperties;
+          };
         case "secondary":
           return {
             backgroundColor: colors.ui.alternative,
             color: colors.ui.strong,
-            "--tw-ring-color": colors.ui.alternative,
-          } as React.CSSProperties;
+          };
         case "error":
           return {
             backgroundColor: colors.semantic.error,
-            "--tw-ring-color": colors.semantic.error,
-          } as React.CSSProperties;
+          };
         case "outline":
           return {
             borderColor: colors.ui.normal,
             color: colors.ui.strong,
-            "--tw-ring-color": colors.ui.normal,
-          } as React.CSSProperties;
+          };
         case "ghost":
           return {
             color: colors.ui.strong,
-            "--tw-ring-color": colors.ui.normal,
-          } as React.CSSProperties;
+          };
         default:
           return {};
       }

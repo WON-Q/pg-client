@@ -46,10 +46,9 @@ const CreateApiKeyModal: React.FC<CreateApiKeyModalProps> = ({
           <input
             type="text"
             id="keyName"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2"
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             style={{
               borderColor: colors.ui.assistive,
-              "--tw-ring-color": colors.primary.DEFAULT,
             }}
             placeholder="예: 프로덕션 API, 테스트 API 등"
             value={newKeyName}
@@ -128,10 +127,9 @@ const CreateApiKeyModal: React.FC<CreateApiKeyModalProps> = ({
                 onChange={(e) =>
                   setCustomDays(Math.max(1, parseInt(e.target.value) || 1))
                 }
-                className="w-24 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2"
+                className="w-24 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 style={{
                   borderColor: colors.ui.assistive,
-                  "--tw-ring-color": colors.primary.DEFAULT,
                 }}
               />
               <span className="text-sm" style={{ color: colors.neutral[600] }}>

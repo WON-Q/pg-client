@@ -70,13 +70,10 @@ export const SetExpiryModal: React.FC<SetExpiryModalProps> = ({
             min={today} // 오늘 이후 날짜만 선택 가능
             value={expiryDate}
             onChange={(e) => setExpiryDate(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2"
-            style={
-              {
-                borderColor: colors.ui.assistive,
-                "--tw-ring-color": colors.primary.DEFAULT,
-              } as React.CSSProperties
-            }
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            style={{
+              borderColor: colors.ui.assistive,
+            }}
           />
         </div>
 
