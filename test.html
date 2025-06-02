@@ -1,0 +1,148 @@
+Name:             wonq-order-server-59bccf89dd-wld2l
+Namespace:        wonq-order-server
+Priority:         0
+Service Account:  default
+Node:             <none>
+    Labels:           app=wonq-order-server
+    linkerd.io/control-plane-ns=linkerd
+    linkerd.io/proxy-deployment=wonq-order-server
+    linkerd.io/workload-ns=wonq-order-server
+    pod-template-hash=59bccf89dd
+    Annotations:      cloud.google.com/cluster_autoscaler_unhelpable_since: 2025-05-28T03:05:44+0000
+    cloud.google.com/cluster_autoscaler_unhelpable_until: Inf
+    linkerd.io/created-by: linkerd/proxy-injector stable-2.14.10
+    linkerd.io/inject: enabled
+    linkerd.io/proxy-version: stable-2.14.10
+    linkerd.io/trust-root-sha256: 6e8dd7eb6017f4a34b03fb6bb79e343e6dd152066bbba9dea42a7b363b44d4d1
+    viz.linkerd.io/tap-enabled: true
+    Status:           Pending
+    IP:
+    IPs:              <none>
+    Controlled By:    ReplicaSet/wonq-order-server-59bccf89dd
+    Init Containers:
+    linkerd-init:
+    Image:           cr.l5d.io/linkerd/proxy-init:v2.2.3
+    Port:            <none>
+    Host Port:       <none>
+    SeccompProfile:  RuntimeDefault
+    Args:
+    --incoming-proxy-port
+    4143
+    --outgoing-proxy-port
+    4140
+    --proxy-uid
+    2102
+    --inbound-ports-to-ignore
+    4190,4191,4567,4568
+    --outbound-ports-to-ignore
+    4567,4568
+    Limits:
+    cpu:     100m
+    memory:  20Mi
+    Requests:
+    cpu:        100m
+    memory:     20Mi
+    Environment:  <none>
+    Mounts:
+    /run from linkerd-proxy-init-xtables-lock (rw)
+    /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-gd5lr (ro)
+    Containers:
+    linkerd-proxy:
+    Image:           cr.l5d.io/linkerd/proxy:stable-2.14.10
+    Ports:           4143/TCP, 4191/TCP
+    Host Ports:      0/TCP, 0/TCP
+    SeccompProfile:  RuntimeDefault
+    Liveness:        http-get http://:4191/live delay=10s timeout=1s period=10s #success=1 #failure=3
+    Readiness:       http-get http://:4191/ready delay=2s timeout=1s period=10s #success=1 #failure=3
+    Environment:
+    _pod_name:                                                wonq-order-server-59bccf89dd-wld2l (v1:metadata.name)
+    _pod_ns:                                                  wonq-order-server (v1:metadata.namespace)
+    _pod_nodeName:                                             (v1:spec.nodeName)
+    LINKERD2_PROXY_LOG:                                       warn,linkerd=info,trust_dns=error
+    LINKERD2_PROXY_LOG_FORMAT:                                plain
+    LINKERD2_PROXY_DESTINATION_SVC_ADDR:                      linkerd-dst-headless.linkerd.svc.cluster.local.:8086
+    LINKERD2_PROXY_DESTINATION_PROFILE_NETWORKS:              10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16
+    LINKERD2_PROXY_POLICY_SVC_ADDR:                           linkerd-policy.linkerd.svc.cluster.local.:8090
+    LINKERD2_PROXY_POLICY_WORKLOAD:                           $(_pod_ns):$(_pod_name)
+    LINKERD2_PROXY_INBOUND_DEFAULT_POLICY:                    all-unauthenticated
+    LINKERD2_PROXY_POLICY_CLUSTER_NETWORKS:                   10.0.0.0/8,100.64.0.0/10,172.16.0.0/12,192.168.0.0/16
+    LINKERD2_PROXY_INBOUND_CONNECT_TIMEOUT:                   100ms
+    LINKERD2_PROXY_OUTBOUND_CONNECT_TIMEOUT:                  1000ms
+    LINKERD2_PROXY_OUTBOUND_DISCOVERY_IDLE_TIMEOUT:           5s
+    LINKERD2_PROXY_INBOUND_DISCOVERY_IDLE_TIMEOUT:            90s
+    LINKERD2_PROXY_CONTROL_LISTEN_ADDR:                       0.0.0.0:4190
+    LINKERD2_PROXY_ADMIN_LISTEN_ADDR:                         0.0.0.0:4191
+    LINKERD2_PROXY_OUTBOUND_LISTEN_ADDR:                      127.0.0.1:4140
+    LINKERD2_PROXY_INBOUND_LISTEN_ADDR:                       0.0.0.0:4143
+    LINKERD2_PROXY_INBOUND_IPS:                                (v1:status.podIPs)
+    LINKERD2_PROXY_INBOUND_PORTS:                             8080
+    LINKERD2_PROXY_DESTINATION_PROFILE_SUFFIXES:              svc.cluster.local.
+    LINKERD2_PROXY_INBOUND_ACCEPT_KEEPALIVE:                  10000ms
+    LINKERD2_PROXY_OUTBOUND_CONNECT_KEEPALIVE:                10000ms
+    LINKERD2_PROXY_INBOUND_PORTS_DISABLE_PROTOCOL_DETECTION:  25,587,3306,4444,5432,6379,9300,11211
+    LINKERD2_PROXY_DESTINATION_CONTEXT:                       {"ns":"$(_pod_ns)", "nodeName":"$(_pod_nodeName)", "pod":"$(_pod_name)"}
+
+    _pod_sa:                                                   (v1:spec.serviceAccountName)
+    _l5d_ns:                                                  linkerd
+    _l5d_trustdomain:                                         cluster.local
+    LINKERD2_PROXY_IDENTITY_DIR:                              /var/run/linkerd/identity/end-entity
+    LINKERD2_PROXY_IDENTITY_TRUST_ANCHORS:                    -----BEGIN CERTIFICATE-----
+    MIIBjTCCATSgAwIBAgIRALLhTx7rrjBUpHnc18W5/0wwCgYIKoZIzj0EAwIwJTEj
+    MCEGA1UEAxMacm9vdC5saW5rZXJkLmNsdXN0ZXIubG9jYWwwHhcNMjUwNTI3MTQx
+    MDE2WhcNMzUwNTI1MTQxMDE2WjAlMSMwIQYDVQQDExpyb290LmxpbmtlcmQuY2x1
+    c3Rlci5sb2NhbDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABPPDv3njhY92LDye
+    hzF7LjwhgD9KWEAMCbL5nBqsm86KX5POw9+Y6o8xtM46vz2hkTfOMOIMbWwl27Iz
+    p9zDO/CjRTBDMA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEBMB0G
+    A1UdDgQWBBRPwuOkeX9IZ7TB0wKQg2ZzqkUdFTAKBggqhkjOPQQDAgNHADBEAiA7
+    ejnBNwE+6o+g+o7s30Xs0/uipcd6khL3W7eeTmeaCQIgODHyQ4wjxjBizeSJEX1q
+    HqO6c8FabINvNlWHKUDG6Uo=
+    -----END CERTIFICATE-----
+
+    LINKERD2_PROXY_IDENTITY_TOKEN_FILE:                       /var/run/secrets/tokens/linkerd-identity-token
+    LINKERD2_PROXY_IDENTITY_SVC_ADDR:                         linkerd-identity-headless.linkerd.svc.cluster.local.:8080
+    LINKERD2_PROXY_IDENTITY_LOCAL_NAME:                       $(_pod_sa).$(_pod_ns).serviceaccount.identity.linkerd.cluster.local
+    LINKERD2_PROXY_IDENTITY_SVC_NAME:                         linkerd-identity.linkerd.serviceaccount.identity.linkerd.cluster.local
+    LINKERD2_PROXY_DESTINATION_SVC_NAME:                      linkerd-destination.linkerd.serviceaccount.identity.linkerd.cluster.local
+    LINKERD2_PROXY_POLICY_SVC_NAME:                           linkerd-destination.linkerd.serviceaccount.identity.linkerd.cluster.local
+    LINKERD2_PROXY_TAP_SVC_NAME:                              tap.linkerd-viz.serviceaccount.identity.linkerd.cluster.local
+    Mounts:
+    /var/run/linkerd/identity/end-entity from linkerd-identity-end-entity (rw)
+    /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-gd5lr (ro)
+    /var/run/secrets/tokens from linkerd-identity-token (rw)
+    wonq-order-server:
+    Image:        asia-northeast3-docker.pkg.dev/fisa-wonq-order/wonq-order/server:0.2.0
+    Port:         8080/TCP
+    Host Port:    0/TCP
+    Environment:  <none>
+    Mounts:
+    /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-gd5lr (ro)
+    Conditions:
+    Type           Status
+    PodScheduled   False
+    Volumes:
+    kube-api-access-gd5lr:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+    linkerd-proxy-init-xtables-lock:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:
+    SizeLimit:  <unset>
+    linkerd-identity-end-entity:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     Memory
+    SizeLimit:  <unset>
+    linkerd-identity-token:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  86400
+    QoS Class:                   Burstable
+    Node-Selectors:              <none>
+    Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+    node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+    Events:
+    Type     Reason             Age                   From                Message
+    ----     ------             ----                  ----                -------
+    Warning  FailedScheduling   6m2s (x268 over 22h)  default-scheduler   0/2 nodes are available: 2 Insufficient cpu. preemption: 0/2 nodes are available: 2 No preemption victims found for incoming pod.
+    Normal   NotTriggerScaleUp  98s (x8015 over 22h)  cluster-autoscaler  pod didn't trigger scale-up:

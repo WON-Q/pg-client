@@ -5,7 +5,7 @@ import { FileDown, Filter, Search, Trash2 } from "lucide-react";
 import Pagination from "@/components/ui/Pagination";
 import { exportToCsv } from "@/utils/csvExport";
 import { BaseResponse, Page } from "@/types/api";
-import { ApiKeyResponseDto } from "@/app/api/admin/api-keys/route"
+import { ApiKeyResponseDto } from "@/types/api"
 
 export default function AdminApiKeysPage() {
   const [apiKeys, setApiKeys] = useState<ApiKeyResponseDto[]>([]); // API 키 목록

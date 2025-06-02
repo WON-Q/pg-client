@@ -136,7 +136,7 @@ export default function AdminTransactionsPage() {
     switch (status) {
       case "APPROVED":
         return {
-          variant: "success" as const,
+          variant: "primary" as const,
           icon: <Check className="w-3 h-3" />,
           label: "승인됨",
         };
@@ -155,13 +155,13 @@ export default function AdminTransactionsPage() {
         };
       case "REFUND_FAILED":
         return {
-          variant: "warning" as const,
+          variant: "error" as const,
           icon: <Undo2 className="w-3 h-3" />,
           label: "환불실패",
         };
       case "PENDING":
         return {
-          variant: "warning" as const,
+          variant: "outline" as const,
           icon: <Clock className="w-3 h-3" />,
           label: "대기중",
         };
@@ -190,7 +190,7 @@ export default function AdminTransactionsPage() {
         };
       case "WOORI_APP_CARD":
         return {
-          variant: "accent" as const,
+          variant: "primary" as const,
           icon: <CreditCard className="w-3 h-3" />,
           label: "우리앱카드",
         };
