@@ -2,55 +2,9 @@
 
 import React, { useState } from "react";
 import ApiKeysList from "@/components/user/dashboard/api-keys/ApiKeysList";
-import ErrorGuide from "@/components/user/dashboard/api-keys/ErrorGuide";
-import CreateApiKeyModal from "@/components/user/dashboard/api-keys/modals/CreateApiKeyModal";
-
 
 export default function ApiKeysPage() {
   const [activeTab, setActiveTab] = useState("keys"); // keys, guide, errors
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newKeyName, setNewKeyName] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
-
-
-  const handleCreateKey = async (expiresInDays: number) => {
-  if (!newKeyName.trim()) {
-    alert("API 키 이름을 입력해주세요.");
-    return;
-  }
-  setIsGenerating(true);
-  try {
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + expiresInDays);
-
-    const response = await fetch("/api/user/api-keys", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-      body: JSON.stringify({
-        name: newKeyName,
-        expiresAt: expiresAt.toISOString(),
-      }),
-    });
-
-    if (!response.ok) throw new Error("API 키 생성 실패");
-
-    const data = await response.json();
-    console.log("API 키 생성 응답 데이터:", data);
-    console.log("API 키 생성 성공:", data);
-
-    setIsModalOpen(false);
-    setNewKeyName("");
-    // API 키 목록 갱신 로직 호출
-  } catch (error) {
-    console.error("API 키 생성 중 오류:", error);
-    alert("API 키 생성에 실패했습니다. 다시 시도해주세요.");
-  } finally {
-    setIsGenerating(false);
-  }
-};
 
   return (
     <div className="space-y-6">
@@ -88,28 +42,7 @@ export default function ApiKeysPage() {
       </div>
 
       {/* 탭 컨텐츠 */}
-      {activeTab === "keys" && (
-        <div>
-          <ApiKeysList/>
-          <button
-            className="mt-4 px-4 py-2 bg-[#0067AC] text-white rounded-md"
-            onClick={() => setIsModalOpen(true)}
-          >
-            새 API 키 생성
-          </button>
-        </div>
-      )}
-      {activeTab === "errors" && <ErrorGuide/>}
-
-      {/* Create API Key Modal */}
-      <CreateApiKeyModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        newKeyName={newKeyName}
-        setNewKeyName={setNewKeyName}
-        onCreateKey={handleCreateKey}
-        isGenerating={isGenerating}
-      />
+      {activeTab === "keys" && <ApiKeysList />}
     </div>
   );
 }
