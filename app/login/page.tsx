@@ -113,7 +113,7 @@ export default function Login() {
                   !isAdmin ? "text-white" : "text-[#0067AC]"
                 }`}
               >
-                사용자
+                개발자
               </div>
               <div
                 className={`flex items-center justify-center font-medium transition-colors ${

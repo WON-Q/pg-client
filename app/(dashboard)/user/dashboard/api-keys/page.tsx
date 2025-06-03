@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import ApiKeysList from "@/components/user/dashboard/api-keys/ApiKeysList";
-import ErrorGuide from "@/components/user/dashboard/api-keys/ErrorGuide";
 
 export default function ApiKeysPage() {
   const [activeTab, setActiveTab] = useState("keys"); // keys, guide, errors
@@ -44,7 +43,6 @@ export default function ApiKeysPage() {
 
       {/* 탭 컨텐츠 */}
       {activeTab === "keys" && <ApiKeysList />}
-      {activeTab === "errors" && <ErrorGuide />}
     </div>
   );
 }

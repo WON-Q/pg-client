@@ -17,11 +17,10 @@ import {
   XCircle,
 } from "lucide-react";
 import {Badge} from "@/components/ui/Badge";
-import {SetExpiryModal} from "./modals/SetExpiryModal";
+import {SetExpiryModal} from "../../../../app/(dashboard)/user/dashboard/api-keys/modals/SetExpiryModal";
 // 모달 컴포넌트 임포트
-import CreateApiKeyModal from "./modals/CreateApiKeyModal";
-import SuccessApiKeyModal from "./modals/SuccessApiKeyModal";
-import DeleteApiKeyModal from "./modals/DeleteApiKeyModal";
+import CreateApiKeyModal from "./CreateApiKeyModal";
+import SuccessApiKeyModal from "../../../../app/(dashboard)/user/dashboard/api-keys/modals/SuccessApiKeyModal";
 
 // API 키 타입 정의
 interface ApiKey {
@@ -384,8 +383,8 @@ export default function ApiKeysList() {
                         {status === "active"
                           ? "활성"
                           : status === "expiring"
-                          ? "만료 예정"
-                          : "만료됨"}
+                            ? "만료 예정"
+                            : "만료됨"}
                       </button>
                     ))}
                   </div>
@@ -427,123 +426,123 @@ export default function ApiKeysList() {
         <div className="bg-white rounded-lg border border-[#CDE5FF] overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="bg-[#F6FBFF]">
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
-                  이름
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
-                  Access Key ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
-                  생성일
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
-                  만료일
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
-                  상태
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-[#0067AC] uppercase tracking-wider">
-                  작업
-                </th>
-              </tr>
+            <tr className="bg-[#F6FBFF]">
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                이름
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                Access Key ID
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                생성일
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                만료일
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                상태
+              </th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-[#0067AC] uppercase tracking-wider">
+                작업
+              </th>
+            </tr>
             </thead>
             <tbody className="divide-y divide-[#CDE5FF]">
-              {filteredApiKeys.map((key, index) => (
-                <tr
-                  key={key.id}
-                  className={
-                    index === 0 && key.id === newlyCreatedKey?.id
-                      ? "bg-[#F0F9FF]"
-                      : ""
-                  }
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <TagIcon className="h-4 w-4 text-[#5E99D6] mr-2" />
-                      <div className="font-medium">{key.name}</div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 font-mono text-sm">
-                    <div className="flex items-center">
-                      <span className="mr-2">{key.accessKeyId}</span>
-                      <button
-                        className="text-[#5E99D6] hover:text-[#0067AC]"
-                        onClick={() => copyToClipboard(key.accessKeyId, key.id)}
-                        title="복사"
-                      >
-                        {copiedKeyId === key.id ? (
-                          <Check className="h-4 w-4" />
-                        ) : (
-                          <Copy className="h-4 w-4" />
-                        )}
-                      </button>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div
-                      className="flex items-center text-sm text-[#5E99D6]"
-                      title={formatDetailDate(key.createdAt)}
+            {filteredApiKeys.map((key, index) => (
+              <tr
+                key={key.id}
+                className={
+                  index === 0 && key.id === newlyCreatedKey?.id
+                    ? "bg-[#F0F9FF]"
+                    : ""
+                }
+              >
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <TagIcon className="h-4 w-4 text-[#5E99D6] mr-2" />
+                    <div className="font-medium">{key.name}</div>
+                  </div>
+                </td>
+                <td className="px-6 py-4 font-mono text-sm">
+                  <div className="flex items-center">
+                    <span className="mr-2">{key.accessKeyId}</span>
+                    <button
+                      className="text-[#5E99D6] hover:text-[#0067AC]"
+                      onClick={() => copyToClipboard(key.accessKeyId, key.id)}
+                      title="복사"
                     >
-                      <Calendar className="h-4 w-4 mr-1" />
-                      {formatDate(key.createdAt)}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div
-                        className="text-sm text-[#5E99D6]"
-                        title={
-                          key.expiresAt
-                            ? formatDetailDate(key.expiresAt)
-                            : "만료일 미설정"
-                        }
-                      >
-                        {key.expiresAt ? formatDate(key.expiresAt) : "미설정"}
-                        {key.status === "expiring" && key.expiresAt && (
-                          <span className="ml-2 text-xs text-amber-600">
+                      {copiedKeyId === key.id ? (
+                        <Check className="h-4 w-4" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div
+                    className="flex items-center text-sm text-[#5E99D6]"
+                    title={formatDetailDate(key.createdAt)}
+                  >
+                    <Calendar className="h-4 w-4 mr-1" />
+                    {formatDate(key.createdAt)}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    <div
+                      className="text-sm text-[#5E99D6]"
+                      title={
+                        key.expiresAt
+                          ? formatDetailDate(key.expiresAt)
+                          : "만료일 미설정"
+                      }
+                    >
+                      {key.expiresAt ? formatDate(key.expiresAt) : "미설정"}
+                      {key.status === "expiring" && key.expiresAt && (
+                        <span className="ml-2 text-xs text-amber-600">
                             ({getDaysRemaining(key.expiresAt)}일 남음)
                           </span>
-                        )}
-                      </div>
-                      <button
-                        className="ml-2 text-[#5E99D6] hover:text-[#0067AC]"
-                        onClick={() => handleSetExpiry(key.id)}
-                        title="만료일 설정"
-                      >
-                        <Calendar className="h-4 w-4" />
-                      </button>
+                      )}
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge
-                      variant={
-                        key.status === "active"
-                          ? "primary"
-                          : key.status === "expiring"
+                    <button
+                      className="ml-2 text-[#5E99D6] hover:text-[#0067AC]"
+                      onClick={() => handleSetExpiry(key.id)}
+                      title="만료일 설정"
+                    >
+                      <Calendar className="h-4 w-4" />
+                    </button>
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <Badge
+                    variant={
+                      key.status === "active"
+                        ? "primary"
+                        : key.status === "expiring"
                           ? "secondary"
                           : "error"
-                      }
-                      size="sm"
-                    >
-                      {key.status === "active"
-                        ? "활성"
-                        : key.status === "expiring"
+                    }
+                    size="sm"
+                  >
+                    {key.status === "active"
+                      ? "활성"
+                      : key.status === "expiring"
                         ? "만료 예정"
                         : "만료됨"}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
-                    <button
-                      className="text-[#FA333F] hover:text-red-600"
-                      onClick={() => confirmDeleteKey(key.id)}
-                      title="API 키 삭제"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                  </Badge>
+                </td>
+                <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
+                  <button
+                    className="text-[#FA333F] hover:text-red-600"
+                    onClick={() => confirmDeleteKey(key.id)}
+                    title="API 키 삭제"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </td>
+              </tr>
+            ))}
             </tbody>
           </table>
         </div>
@@ -594,11 +593,6 @@ export default function ApiKeysList() {
         copiedSecretId={copiedSecretId}
       />
 
-      <DeleteApiKeyModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onDelete={handleDeleteKey}
-      />
 
       <SetExpiryModal
         isOpen={showExpiryModal}
@@ -610,7 +604,7 @@ export default function ApiKeysList() {
         currentExpiry={
           selectedKeyForExpiry
             ? apiKeys.find((key) => key.id === selectedKeyForExpiry)
-                ?.expiresAt || null
+            ?.expiresAt || null
             : null
         }
       />

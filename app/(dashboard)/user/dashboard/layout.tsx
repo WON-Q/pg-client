@@ -114,7 +114,7 @@ export default function UserDashboardLayout({ children }: UserDashboardLayoutPro
                 <span className="text-sm font-medium">김</span>
               </div>
               <div className="hidden md:flex flex-col items-start text-sm">
-                <span>김사용자</span>
+                <span>김새봄</span>
               </div>
               <ChevronDown className="h-4 w-4 text-[#5E99D6]" />
             </button>
