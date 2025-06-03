@@ -137,38 +137,43 @@ export default function AdminTransactionsPage() {
       case "APPROVED":
         return {
           variant: "success" as const,
-          icon: <Check className="w-3 h-3" />,
+          icon: <Check className="w-3 h-3 text-green-500" />, // 초록색
           label: "승인됨",
         };
       case "FAILED":
+        return {
+          variant: "error" as const,
+          icon: <X className="w-3 h-3 text-red-500" />, // 빨간색
+          label: "실패",
+        };
       case "AUTH_FAILED":
         return {
           variant: "error" as const,
-          icon: <X className="w-3 h-3" />,
-          label: status === "FAILED" ? "실패" : "인증실패",
+          icon: <X className="w-3 h-3 text-red-500" />,
+          label: "인증실패",
         };
       case "CANCELLED":
         return {
           variant: "secondary" as const,
-          icon: <X className="w-3 h-3" />,
+          icon: <X className="w-3 h-3 text-gray-400" />, // 회색
           label: "취소됨",
         };
       case "REFUND_FAILED":
         return {
           variant: "warning" as const,
-          icon: <Undo2 className="w-3 h-3" />,
+          icon: <Undo2 className="w-3 h-3 text-yellow-500" />, // 노란색
           label: "환불실패",
         };
       case "PENDING":
         return {
           variant: "warning" as const,
-          icon: <Clock className="w-3 h-3" />,
+          icon: <Clock className="w-3 h-3 text-yellow-500" />,
           label: "대기중",
         };
       case "CREATED":
         return {
           variant: "primary" as const,
-          icon: <AlertTriangle className="w-3 h-3" />,
+          icon: <AlertTriangle className="w-3 h-3 text-blue-500" />, // 파란색
           label: "생성됨",
         };
       default:
@@ -185,19 +190,19 @@ export default function AdminTransactionsPage() {
       case "APP_CARD":
         return {
           variant: "outline" as const,
-          icon: <CreditCard className="w-3 h-3" />,
+          icon: <CreditCard className="w-3 h-3 text-sky-500" />, // 연파랑
           label: "앱카드",
         };
       case "WOORI_APP_CARD":
         return {
           variant: "accent" as const,
-          icon: <CreditCard className="w-3 h-3" />,
+          icon: <CreditCard className="w-3 h-3 text-purple-500" />, // 보라색
           label: "우리앱카드",
         };
       default:
         return {
           variant: "default" as const,
-          icon: <CreditCard className="w-3 h-3" />,
+          icon: <CreditCard className="w-3 h-3 text-gray-500" />,
           label: method,
         };
     }
